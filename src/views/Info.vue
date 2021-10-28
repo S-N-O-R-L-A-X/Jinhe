@@ -1,9 +1,9 @@
 <template>
   <v-card
-    color="red lighten-2"
+    color="amber lighten-2"
     dark
   >
-    <v-card-title class="text-h5 red lighten-3">
+    <v-card-title class="text-h5 amber lighten-3">
       查询线路信息
     </v-card-title>
 
@@ -11,25 +11,17 @@
       <v-autocomplete
         v-model="model" :items="items" :loading="isLoading"
         :search-input.sync="search"
-        color="white"
-        hide-no-data
-        hide-selected
-        item-text="Description"
-        item-value="API"
-        label="请在此输入线路名"
-        placeholder="输入线路名"
-        prepend-icon="mdi-database-search"
-        return-object
-      ></v-autocomplete>
+        color="white" hide-no-data hide-selected
+        item-text="Description" item-value="API"
+        label="请在此输入线路名" placeholder="输入线路名"
+        prepend-icon="mdi-database-search" return-object>
+      </v-autocomplete>
     </v-card-text>
     <v-divider></v-divider>
     <v-expand-transition>
-      <v-list
-        v-if="model"
-        class="red lighten-3"
-      >
+      <v-list v-if="model" class="amber lighten-3">
         <v-list-item
-          v-for="(field, i) in fields"
+          v-for="(field,i) in fields"
           :key="i"
         >
           <v-list-item-content>
@@ -55,9 +47,10 @@
   </v-card>
 </template>
 <script>
+  import axios from "axios"
   export default {
     data: () => ({
-      descriptionLimit: 60,
+      descriptionLimit: 30,
       entries: [],
       isLoading: false,
       model: null,
