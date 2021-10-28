@@ -6,19 +6,23 @@
       </div>
 
       <v-spacer></v-spacer>
-      <router-link to="/info">基本信息查询</router-link>
+      <router-link to="/"><v-icon>mdi-car-info</v-icon>首页</router-link>
       <v-spacer></v-spacer>
-      <router-link to="/platform">站台查询</router-link>
+      <router-link to="/info"><v-icon>mdi-car-info</v-icon>基本信息查询</router-link>
       <v-spacer></v-spacer>
-      <router-link to="/shift">班次查询</router-link>
+      <router-link to="/platform"><v-icon>mdi-bus-marker</v-icon>站台查询</router-link>
       <v-spacer></v-spacer>
-      <router-link to="/analysis">分析查询</router-link>
+      <router-link to="/shift"><v-icon>mdi-bus-stop</v-icon>班次查询</router-link>
       <v-spacer></v-spacer>
-      <router-link to="/route">线路查询</router-link>
+      <router-link to="/analysis"><v-icon>mdi-bus-multiple</v-icon>分析查询</router-link>
+      <v-spacer></v-spacer>
+      <router-link to="/route"><v-icon>mdi-subway</v-icon>线路管理</router-link>
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <v-container fluid>
+        <router-view/>
+      </v-container>
     </v-main>
   </v-app>
 </template>
@@ -33,3 +37,7 @@ export default {
   }),
 };
 </script>
+
+<style scoped>
+
+</style>

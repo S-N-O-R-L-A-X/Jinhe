@@ -4,20 +4,29 @@
     dark
   >
     <v-card-title class="text-h5 red lighten-3">
-      查询线路信息
+      Search for Public APIs
     </v-card-title>
-
+    <v-card-text>
+      Explore hundreds of free API's ready for consumption! For more information visit
+      <a
+        class="grey--text text--lighten-3"
+        href="https://github.com/toddmotto/public-apis"
+        target="_blank"
+      >the GitHub repository</a>.
+    </v-card-text>
     <v-card-text>
       <v-autocomplete
-        v-model="model" :items="items" :loading="isLoading"
+        v-model="model"
+        :items="items"
+        :loading="isLoading"
         :search-input.sync="search"
         color="white"
         hide-no-data
         hide-selected
         item-text="Description"
         item-value="API"
-        label="请在此输入线路名"
-        placeholder="输入线路名"
+        label="Public APIs"
+        placeholder="Start typing to Search"
         prepend-icon="mdi-database-search"
         return-object
       ></v-autocomplete>

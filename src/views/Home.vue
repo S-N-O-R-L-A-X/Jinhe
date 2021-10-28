@@ -16,9 +16,12 @@
 <style>
 a{
   text-decoration: none;
+  color:white;
 }
+
 
 .router-link-active{
   text-decoration: none;
+  color:red;
 }
 </style>
