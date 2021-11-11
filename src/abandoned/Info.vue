@@ -8,11 +8,22 @@
     </v-card-title>
     <v-row>
       <v-col cols="6">
-    <v-card-text >
-      <v-text-field v-model="line_id" placeholder="请输入线路名" label="请输入线路名"></v-text-field>
+    <v-card-text>
+      <v-autocomplete v-model="line_id" :items="items" :loading="isLoading" :search-input.sync="search" color="white" hide-no-data hide-selected item-text="Description" item-value="API"
+        label="请在此输入线路名" placeholder="输入线路名" prepend-icon="mdi-database-search" return-object>
+      </v-autocomplete>
     </v-card-text>
     <v-divider></v-divider>
-    
+    <v-expand-transition>
+      <v-list v-if="line_id" class="amber lighten-3">
+        <v-list-item v-for="(field,i) in fields" :key="i">
+          <v-list-item-content>
+            <v-list-item-title v-text="field.value"></v-list-item-title>
+            <v-list-item-subtitle v-text="field.key"></v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-expand-transition>
     <v-card-actions>
       <v-btn color="amber darken-3" @click="getBasicInfo()">
         Search
@@ -21,7 +32,7 @@
         </v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn :disabled="!line_id" color="grey darken-3" @click="clearAll">
+      <v-btn :disabled="!line_id" color="grey darken-3" @click="line_id = null">
         Clear
         <v-icon right>
           mdi-close-circle
@@ -33,41 +44,46 @@
         <v-expand-transition offset--x>
           <div v-show="returned===1">
             <v-row align="center">
+              <v-item-group v-model="window" class="shrink mr-6" mandatory><!--tag="v-flex" -->
+                <v-item v-for="n in length" :key="n" v-slot:default="{ active, toggle }">
+                  <div>
+                    <v-btn :input-value="active" icon @click="toggle">
+                      <v-icon>mdi-record</v-icon>
+                    </v-btn>
+                  </div>
+                </v-item>
+              </v-item-group>
+
               <v-col>
-                <v-card color="light-blue lighten-3"  flat>
-                  <v-card-title>{{basicInfo.route}}<v-avatar><span>{{basicInfo.line_id}}</span></v-avatar></v-card-title>
+                <v-window v-model="window" class="elevation-1" vertical>
+                  <v-window-item v-for="n in length" :key="n">
+                    <v-card flat>
+                      <v-card-title>{{basicInfo.name}}<v-avatar><span>{{basicInfo.name}}</span></v-avatar></v-card-title>
 
-                  <v-card-text>
-                    <v-row class="mb-4" align="center">
-                      <v-col cols="6">
-                        单次时间：{{basicInfo.onewayTime}} <v-icon>mdi-alarm-check</v-icon>
-                      </v-col>
-                      <v-col cols="6">
-                        <span v-show="basicInfo.directional==='TRUE'">方向：双向<v-icon>mdi-swap-horizontal</v-icon></span>
-                        <span v-show="basicInfo.directional==='FALSE'">方向：单向<v-icon>mdi-arrow-right</v-icon></span>
-                      </v-col>                          
-                    </v-row>
+                      <v-card-text>
+                        <v-row class="mb-4" align="center">
+                          <v-col cols="6">
+                            <v-icon></v-icon>单次时间：{{basicInfo.onewayTime}}
+                          </v-col>
+                          <v-col cols="6">
+                            <span v-show="basicInfo.directional==='TRUE'"><v-icon>mdi-ArrowLeftRightBold</v-icon>方向：双向</span>
+                            <span v-show="basicInfo.directional==='FALSE'"><v-icon>mdi-ArrowLeftRightBold</v-icon>方向：单向</span>
+                          </v-col>                          
+                        </v-row>
 
-                    <v-row class="mb-4" align="center">
-                      <v-col cols="6">
-                        <v-icon></v-icon>里程数：{{basicInfo.kilometer}} 公里
-                      </v-col>
-                      <v-col cols="6">
-                        <v-icon></v-icon>类型：{{basicInfo.type}}
-                      </v-col>
-                    </v-row>
-
-                    <v-row class="mb-4" align="center">
-                      <v-col cols="6">
-                        运营时间：{{basicInfo.timetable}} <v-icon>mdi-bus-clock</v-icon>
-                      </v-col>
-                      <v-col cols="6">
-                        发车间隔：{{basicInfo.interval}}分钟  <v-icon>mdi-clipboard-text-clock-outline</v-icon>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
-
+                        <v-row class="mb-4" align="center">
+                          <v-col cols="6">
+                            <v-icon></v-icon>里程数：{{basicInfo.kilometer}}
+                          </v-col>
+                          <v-col cols="6">
+                            <v-icon></v-icon>类型：{{basicInfo.type}}
+                          </v-col>
+                        </v-row>
+                       
+                      </v-card-text>
+                    </v-card>
+                  </v-window-item>
+                </v-window>
               </v-col>
             </v-row>
           </div>
@@ -113,10 +129,6 @@
               this.loading = false;
             });
       },
-      clearAll(){
-        this.line_id = null;
-        this.returned=0;
-      }
     },
     
     computed: {
