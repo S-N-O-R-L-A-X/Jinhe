@@ -28,7 +28,7 @@
       </v-list>
     </v-expand-transition>
     <v-card-actions>
-      <v-btn color="amber darken-3" @click="returned=true">
+      <v-btn color="amber darken-3" @click="returned=1">
         Search
         <v-icon right>
           mdi-close-circle
@@ -49,17 +49,14 @@
     </v-col>
     <v-col cols="6">
         <v-expand-transition offset--x>
-          <div v-show="returned">
+          
+          <div v-show="returned===1">
             <v-row align="center">
               <v-item-group v-model="window" class="shrink mr-6" mandatory tag="v-flex">
                 <v-item v-for="n in length"
                   :key="n" v-slot:default="{ active, toggle }">
                   <div>
-                    <v-btn
-                      :input-value="active"
-                      icon
-                      @click="toggle"
-                    >
+                    <v-btn :input-value="active" icon @click="toggle">
                       <v-icon>mdi-record</v-icon>
                     </v-btn>
                   </div>
@@ -67,37 +64,34 @@
               </v-item-group>
 
               <v-col>
-                <v-window
-                  v-model="window"
-                  class="elevation-1"
-                  vertical
-                >
+                <v-window v-model="window" class="elevation-1" vertical>
                   <v-window-item
                     v-for="n in length"
                     :key="n"
                   >
                     <v-card flat>
+                      <v-card-title>aa{{basicInfo.name}}<v-avatar><span>{{basicInfo.name}}</span></v-avatar></v-card-title>
+
                       <v-card-text>
                         <v-row class="mb-4" align="center">
-                          <v-avatar color="grey" class="mr-4"></v-avatar>
-                          <strong class="title">Title {{ n }}</strong>
-                          <v-spacer></v-spacer>
-                          <v-btn icon>
-                            <v-icon>mdi-account</v-icon>
-                          </v-btn>
+                          <v-col cols="6">
+                            <v-icon></v-icon>单次时间：{{basicInfo.onewayTime}}
+                          </v-col>
+                          <v-col cols="6">
+                            
+                            <v-icon>mdiArrowLeftRightBold</v-icon>单向性：{{basicInfo.onewayTime}}
+                          </v-col>                          
                         </v-row>
 
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </p>
-
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </p>
-
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </p>
+                        <v-row class="mb-4" align="center">
+                          <v-col cols="6">
+                            <v-icon></v-icon>里程数：{{basicInfo.kilometer}}
+                          </v-col>
+                          <v-col cols="6">
+                            <v-icon></v-icon>类型：{{basicInfo.type}}
+                          </v-col>
+                        </v-row>
+                       
                       </v-card-text>
                     </v-card>
                   </v-window-item>
@@ -120,11 +114,33 @@
       isLoading: false,
       model: null,
       search: null,
-      returned:false,
+      returned:0,
       length: 3,
       window: 0,
+      basicInfo:{},
     }),
-
+    methods:{
+      getBasicInfo(){
+        let that=this;
+        axios.get('http://localhost:8081/nosql/LineController/listLineInfo',  {
+            params: {
+              line_id:30
+            }
+          })
+            .then(response => {
+              
+              console.log(response);
+              that.basicInfo = response.data.data;
+            })
+            .catch(error => {
+              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+            })
+            .finally(() => {
+              this.loading = false;
+            });
+      },
+    },
+    
     computed: {
       fields () {
         if (!this.model) return []
