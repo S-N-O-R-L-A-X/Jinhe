@@ -35,7 +35,7 @@
             <v-row align="center">
               <v-col>
                 <v-card color="light-blue lighten-3"  flat>
-                  <v-card-title>{{basicInfo.route}}<v-avatar><span>{{basicInfo.line_id}}</span></v-avatar></v-card-title>
+                  <v-card-title>{{basicInfo.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{basicInfo.line_id}}路公交车 </v-card-title>
 
                   <v-card-text>
                     <v-row class="mb-4" align="center">

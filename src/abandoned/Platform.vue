@@ -44,11 +44,18 @@
     <v-col cols="6">
         <v-expand-transition offset--x>
           
-          <div v-show="returned===1">
+          <div v-show="returned===2">
             <v-row align="center">
-              <v-timeline>
-                
-              </v-timeline>
+              <v-item-group v-model="window" class="shrink mr-6" mandatory>
+                <v-item v-for="n in length"
+                  :key="n" v-slot:default="{ active, toggle }">
+                  <div>
+                    <v-btn :input-value="active" icon @click="toggle">
+                      <v-icon>mdi-record</v-icon>
+                    </v-btn>
+                  </div>
+                </v-item>
+              </v-item-group>
 
               <v-col>
                 <v-window v-model="window" class="elevation-1" vertical>
