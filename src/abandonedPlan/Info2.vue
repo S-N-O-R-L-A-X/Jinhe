@@ -21,7 +21,7 @@
         </v-icon>
       </v-btn>
       
-      <v-btn color="amber darken-3" @click="getShift()">
+      <v-btn color="amber darken-3" @click="testCalendar()">
         Search
         <v-icon right>
           mdi-close-circle
@@ -86,15 +86,11 @@
                 <v-col>
                   <v-card color="light-blue lighten-3"  flat>
                     <v-card-title>{{basicInfo.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{basicInfo.line_id}}路公交车 </v-card-title>
-                      <v-sheet height="300">
-                        <v-timeline>
-                          <v-timeline-item v-for="platform of platforms" dense>
-                            {{platform.name}} {{platform.english}}
-
-                          </v-timeline-item>
-                        </v-timeline>
-                      </v-sheet>
+                    <v-sheet height="400">
+                      <v-calendar type="day" v-for="event of events" :event-overlap-threshold="30"></v-calendar>
+                    </v-sheet>
                   </v-card>
+
                 </v-col>
               </v-row>
             </div>
@@ -142,7 +138,36 @@
               this.loading = false;
             });
       },
-      
+      rnd (a, b) {
+        return Math.floor((b - a + 1) * Math.random()) + a
+      },
+      testCalendar(){
+        let events=[];
+         
+        for (let i = 0; i < 10; i++) {
+          // const min = new Date(`T00:00:00`)
+          // const max = new Date(`T23:59:59`)
+          const min=new Date(2021,11,12,0,0,0);
+          const max=new Date(2021,11,12,23,59,59);
+          const allDay = this.rnd(0, 3) === 0
+          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
+          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
+          const second = new Date(first.getTime() + secondTimestamp)
+          
+          events.push({
+            name: this.names[this.rnd(0, this.names.length - 1)],
+            start: first,
+            end: second,
+            color: this.colors[this.rnd(0, this.colors.length - 1)],
+            timed: !allDay,
+          })
+        }
+
+        this.events = events;
+        console.log(this.events);
+        this.returned=2;
+      },
       getShift(){
           this.loading = true;
           let that = this;

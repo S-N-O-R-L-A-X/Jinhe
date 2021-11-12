@@ -28,7 +28,7 @@
           mdi-close-circle
         </v-icon>
       </v-btn>
-      
+      <v-spacer></v-spacer>
       <v-btn :disabled="!line_id" color="grey darken-3" @click="clearAll()">
         Clear
         <v-icon right>
@@ -93,7 +93,6 @@ export default {
                 console.log(this.platforms);
             });
         },
-        
         clearAll(){
           this.line_id = null;
           this.returned=0;
