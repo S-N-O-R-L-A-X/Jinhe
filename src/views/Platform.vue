@@ -12,28 +12,24 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-radio-group>
-          <v-radio label="不区分上下行"></v-radio>
-          <v-radio label="上行"></v-radio>
-          <v-radio label="下行"></v-radio>
+      <v-radio-group v-model="directional">
+          <!-- <v-radio label="不区分上下行"></v-radio> -->
+          <v-radio label="上行" value="上行"></v-radio>
+          <v-radio label="下行" value="下行"></v-radio>
       </v-radio-group>
     </v-card-actions>
     
     <v-divider></v-divider>
     
     <v-card-actions>
-      <v-btn color="amber darken-3" @click="getBasicInfo()">
+      <v-btn color="amber darken-3" @click="getPlatform()">
         Search
         <v-icon right>
           mdi-close-circle
         </v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn
-        :disabled="!model"
-        color="grey darken-3"
-        @click="model = null"
-      >
+      <v-btn :disabled="!line_id" color="grey darken-3" @click="clearAll()">
         Clear
         <v-icon right>
           mdi-close-circle
@@ -43,34 +39,14 @@
     </v-col>
     <v-col cols="6">
         <v-expand-transition offset--x>
-          
           <div v-show="returned===1">
             <v-row align="center">
-              <v-timeline>
-                
-              </v-timeline>
+              <v-timeline reverse>
+                <v-timeline-item v-for="platform of platforms.alongStation" dense>
+                  {{platform.name}} {{platform.english}}
 
-              <v-col>
-                <v-window v-model="window" class="elevation-1" vertical>
-                  <v-window-item
-                    v-for="n in length"
-                    :key="n"
-                  >
-                    <v-card flat>
-                      <v-card-text>
-                        <v-row class="mb-4" align="center">
-                          <v-avatar color="grey" class="mr-4"></v-avatar>
-                          <strong class="title">Title {{ n }}</strong>
-                          <v-spacer></v-spacer>
-                          <v-btn icon>
-                            <v-icon>mdi-account</v-icon>
-                          </v-btn>
-                        </v-row>
-                      </v-card-text>
-                    </v-card>
-                  </v-window-item>
-                </v-window>
-              </v-col>
+                </v-timeline-item>
+              </v-timeline>
             </v-row>
           </div>
         </v-expand-transition>
@@ -86,33 +62,41 @@ import axios from "axios"
 export default {
     data: () => ({
       descriptionLimit: 30,
-      entries: [],
       isLoading: false,
       line_id: null,
       search: null,
       returned:0,
       length: 3,
       window: 0,
-      basicInfo:{},
+      directional:null,
+      platforms:[],
     }),
     methods: {
-        fetchPrescription(){
+        getPlatform(){
             this.loading = true;
             let that = this;
+            let param=that.line_id+'路'+that.directional;
             axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
             params: {
-
+              name:param
             }
             })
             .then(response => {
-                
+                that.platforms=response.data;
             })
             .catch(error => {
-                alert('获取处方失败：无法连接到服务器，刷新重试。\n' + error.message);
+                alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
             })
             .finally(() => {
                 this.loading = false;
+                this.returned=1;
+                console.log(this.platforms);
             });
+        },
+        clearAll(){
+          this.line_id = null;
+          this.returned=0;
+          this.directional=null;
         }
     }
 }
