@@ -12,17 +12,35 @@
       <v-text-field v-model="line_id" placeholder="请输入线路名" label="请输入线路名"></v-text-field>
     </v-card-text>
     <v-divider></v-divider>
+    <v-card-actions>
+      <v-radio-group v-model="directional">
+          <!-- <v-radio label="不区分上下行"></v-radio> -->
+          <v-radio label="上行" value="上行"></v-radio>
+          <v-radio label="下行" value="下行"></v-radio>
+      </v-radio-group>
+    </v-card-actions>
     
+    <v-divider></v-divider>
+    
+    
+      
     <v-card-actions>
       <v-btn color="amber darken-3" @click="getBasicInfo()">
-        Search
+        查询线路基本信息
         <v-icon right>
           mdi-close-circle
         </v-icon>
       </v-btn>
       
       <v-btn color="amber darken-3" @click="getShift()">
-        Search
+        查询全部班次
+        <v-icon right>
+          mdi-close-circle
+        </v-icon>
+      </v-btn>
+
+      <v-btn color="amber darken-3" @click="getPlatform()">
+        查询全部站台
         <v-icon right>
           mdi-close-circle
         </v-icon>
@@ -42,7 +60,7 @@
             <v-row align="center">
               <v-col>
                 <v-card color="light-blue lighten-3"  flat>
-                  <v-card-title>{{basicInfo.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{basicInfo.line_id}}路公交车 </v-card-title>
+                  <v-card-title>{{basicInfo.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
 
                   <v-card-text>
                     <v-row class="mb-4" align="center">
@@ -80,12 +98,13 @@
           </div>
           
         </v-expand-transition>
+
         <v-expand-transition offset--x>
           <div v-show="returned===2">
               <v-row align="center">
                 <v-col>
                   <v-card color="light-blue lighten-3"  flat>
-                    <v-card-title>{{basicInfo.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{basicInfo.line_id}}路公交车 </v-card-title>
+                    <v-card-title>{{basicInfo.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
                       <v-sheet height="300">
                         <v-timeline>
                           <v-timeline-item v-for="platform of platforms" dense>
@@ -99,6 +118,28 @@
               </v-row>
             </div>
         </v-expand-transition>
+
+        <v-expand-transition offset--x>
+          <div v-show="returned===3">
+            <v-row align="center">
+              <v-col>
+                <v-card color="light-blue lighten-3"  flat>
+                  <v-card-title>{{basicInfo.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
+                    <v-sheet class="overflow-y-auto" height="400">
+                      <v-timeline dense>
+                        <v-timeline-item v-for="platform of platforms" small>
+                          {{platform.name}} {{platform.english}}
+
+                        </v-timeline-item>
+                      </v-timeline>
+                    </v-sheet>
+                </v-card>
+              </v-col>
+
+            </v-row>
+          </div>
+        </v-expand-transition>
+
       </v-col>
     </v-row>
   </v-card>
@@ -117,9 +158,8 @@
       length: 3,
       window: 0,
       basicInfo:{},
-      colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-      events:[],
+      directional:null,
+      platforms:[],
     }),
     methods:{
       getBasicInfo(){
@@ -165,9 +205,34 @@
               console.log(this.platforms);
           });
       },
+
+      getPlatform(){
+          this.loading = true;
+          let that = this;
+          let param=that.line_id+'路'+that.directional;
+          axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
+          params: {
+            name:param
+          }
+          })
+          .then(response => {
+              that.platforms=response.data;
+          })
+          .catch(error => {
+              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+          })
+          .finally(() => {
+              this.loading = false;
+              this.returned=3;
+              console.log(this.platforms);
+          });
+      },
+
+
       clearAll(){
         this.line_id = null;
         this.returned=0;
+        this.directional=null;
       }
     },
     
