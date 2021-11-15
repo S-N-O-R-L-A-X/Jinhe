@@ -12,7 +12,7 @@
       <v-spacer></v-spacer>
       <router-link to="/platform"><v-icon>mdi-bus-marker</v-icon>站台查询</router-link>
       <v-spacer></v-spacer>
-      <router-link to="/shift"><v-icon>mdi-bus-stop</v-icon>班次查询</router-link>
+      <router-link to="/statistics"><v-icon>mdi-bus-stop</v-icon>统计数据</router-link>
       <v-spacer></v-spacer>
       <router-link to="/analysis"><v-icon>mdi-bus-multiple</v-icon>分析查询</router-link>
       <v-spacer></v-spacer>

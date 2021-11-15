@@ -6,6 +6,7 @@ import Analysis from '../views/Analysis.vue'
 import Route from '../views/Route.vue'
 import Shift from '../views/Shift.vue'
 import Platform from '../views/Platform.vue'
+import Statistics from '../views/Statistics.vue'
 
 Vue.use(VueRouter)
 
@@ -47,6 +48,11 @@ const routes = [
     path: '/platform',
     name: 'Platform',
     component: Platform
+  },
+  {
+    path: '/statistics',
+    name: 'Statistics',
+    component: Statistics
   },
 ]
 
