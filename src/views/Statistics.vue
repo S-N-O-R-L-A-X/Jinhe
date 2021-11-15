@@ -1,9 +1,7 @@
 <template>
-
-  <v-card
-    class="mx-auto"
-    width="300"
-  >
+<v-navigation-drawer width="300" app clipped>
+  <v-card height="100%" color="amber">
+    
     <v-list>
       <v-list-item>
         <v-list-item-icon>
@@ -69,7 +67,20 @@
         </v-list-group>
       </v-list-group>
     </v-list>
+    
   </v-card>
+</v-navigation-drawer>
+</template>
+  
+  <script>
+  export default {
+  
+  }
+  </script>
+  
+  <style>
+  
+  </style>
 </template>
 
 

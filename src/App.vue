@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="amber" dark>
+    <v-app-bar app color="amber" dark clipped-left>
       <div class="d-flex align-center">
         金河市公交系统
       </div>
