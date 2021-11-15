@@ -14,7 +14,7 @@
     <v-divider></v-divider>
     <v-card-actions>
       <v-radio-group v-model="directional">
-          <!-- <v-radio label="不区分上下行"></v-radio> -->
+          <v-radio label="不区分上下行" value="off"></v-radio>
           <v-radio label="上行" value="上行"></v-radio>
           <v-radio label="下行" value="下行"></v-radio>
       </v-radio-group>
@@ -28,21 +28,21 @@
       <v-btn color="amber darken-3" @click="getBasicInfo()">
         查询线路基本信息
         <v-icon right>
-          mdi-close-circle
+          mdi-magnify
         </v-icon>
       </v-btn>
       
-      <v-btn color="amber darken-3" @click="getShift()">
+      <v-btn color="amber darken-3" :disabled="directional==='off'" @click="getShift()">
         查询全部班次
         <v-icon right>
-          mdi-close-circle
+          mdi-magnify-expand
         </v-icon>
       </v-btn>
 
-      <v-btn color="amber darken-3" @click="getPlatform()">
+      <v-btn color="amber darken-3" :disabled="directional==='off'" @click="getPlatform()">
         查询全部站台
         <v-icon right>
-          mdi-close-circle
+          mdi-database-search
         </v-icon>
       </v-btn>
 
@@ -160,6 +160,7 @@
       basicInfo:{},
       directional:null,
       platforms:[],
+      
     }),
     methods:{
       getBasicInfo(){
@@ -187,10 +188,13 @@
           this.loading = true;
           let that = this;
           let param=that.line_id+'路'+that.directional;
-          axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
-          params: {
-            name:param
-          }
+          axios.get('http://localhost:8081/nosql/LineController/listShortestRouteByStationId?start=16115&end=14768',  
+          {
+            params: {
+              name:param,
+              start:starting,
+              end:destination
+            }
           })
           .then(response => {
               that.platforms=response.data;

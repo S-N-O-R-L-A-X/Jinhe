@@ -34,7 +34,7 @@ const routes = [
     component: Analysis
   },
   {
-    path: '/ruote',
+    path: '/route',
     name: 'Route',
     component: Route
   },
