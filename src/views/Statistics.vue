@@ -36,10 +36,7 @@
             </v-list-item>
           </v-list-group>
 
-          <v-list-group
-            no-action
-            sub-group
-          >
+          <v-list-group no-action sub-group>
             <template v-slot:activator>
               <v-list-item-content>
                 <v-list-item-title>Actions</v-list-item-title>
@@ -59,6 +56,7 @@
       
     </v-card>
   </v-navigation-drawer>
+
   <div>
     <v-card v-show="returned===1">
       <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
@@ -93,6 +91,12 @@
         </v-col>
       </v-row>
     </v-card>
+
+    <v-card v-show="returned===3">
+        <v-data-table :headers="headers" :items="lines" :items-per-page="15" class="elevation-1">
+        </v-data-table>
+    </v-card>
+
   </div>
 </div>
 
@@ -128,6 +132,7 @@
       ],
       headers:[],
       underground:[],
+      lines:[]
     }),
     methods:{
       getPlatformWithMostRoutes(){
@@ -153,7 +158,7 @@
             });
       },
       
-      getShift(){
+      getSpecialPlatforms(){
           this.loading = true;
           let that = this;
           let param=that.line_id+'路'+that.directional;
@@ -179,17 +184,17 @@
           });
       },
 
-      getPlatform(){
+      getLineNumbers(){
           this.loading = true;
           let that = this;
-          let param=that.line_id+'路'+that.directional;
+          
           axios.get('http://localhost:8081/nosql/LineController/listTransLineCount?lineName=261%E8%B7%AF%E4%B8%8A%E8%A1%8C',  {
           params: {
             name:param
           }
           })
           .then(response => {
-              that.platforms=response.data;
+              that.lines=response.data;
           })
           .catch(error => {
               alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
