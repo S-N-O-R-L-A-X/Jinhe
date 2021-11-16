@@ -1,87 +1,103 @@
 <template>
-<v-navigation-drawer width="300" app clipped>
-  <v-card height="100%" color="amber">
-    
-    <v-list>
-      <v-list-item>
-        <v-list-item-icon>
-          <v-icon>mdi-home</v-icon>
-        </v-list-item-icon>
+<div>
+  <v-navigation-drawer width="300" app clipped>
+    <v-card height="100%" color="amber">
+      
+      <v-list>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
 
-        <v-list-item-title>Home</v-list-item-title>
-      </v-list-item>
-
-      <v-list-group
-        :value="true"
-        prepend-icon="mdi-account-circle"
-      >
-        <template v-slot:activator>
-          <v-list-item-title>Users</v-list-item-title>
-        </template>
+          <v-list-item-title>a</v-list-item-title>
+        </v-list-item>
 
         <v-list-group
           :value="true"
-          no-action
-          sub-group
+          prepend-icon="mdi-account-circle"
         >
           <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>Admin</v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title>Users</v-list-item-title>
           </template>
 
-          <v-list-item
-            v-for="([title, icon], i) in admins"
-            :key="i"
-            link
+          <v-list-group :value="true" no-action sub-group>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Admin</v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item v-for="([title, icon], i) in admins" :key="i" link>
+              <v-list-item-title v-text="title"></v-list-item-title>
+
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+
+          <v-list-group
+            no-action
+            sub-group
           >
-            <v-list-item-title v-text="title"></v-list-item-title>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Actions</v-list-item-title>
+              </v-list-item-content>
+            </template>
 
-            <v-list-item-icon>
-              <v-icon v-text="icon"></v-icon>
-            </v-list-item-icon>
-          </v-list-item>
+            <v-list-item v-for="([title, icon], i) in cruds" :key="i" link>
+              <v-list-item-title v-text="title"></v-list-item-title>
+
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
         </v-list-group>
+      </v-list>
+      
+    </v-card>
+  </v-navigation-drawer>
+  <div>
+    <v-card v-show="returned===1">
+      <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
 
-        <v-list-group
-          no-action
-          sub-group
-        >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>Actions</v-list-item-title>
-            </v-list-item-content>
-          </template>
+      </v-data-table>
+    </v-card>
 
-          <v-list-item
-            v-for="([title, icon], i) in cruds"
-            :key="i"
-            link
-          >
-            <v-list-item-title v-text="title"></v-list-item-title>
+    <v-card v-show="returned===2">
+      <v-row>
+        <v-col cols="3">
+          地铁站
+          <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
+          </v-data-table>
+        </v-col>
 
-            <v-list-item-icon>
-              <v-icon v-text="icon"></v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-        </v-list-group>
-      </v-list-group>
-    </v-list>
-    
-  </v-card>
-</v-navigation-drawer>
+        <v-col cols="3">
+          起点站
+          <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
+          </v-data-table>
+        </v-col>
+
+        <v-col cols="3">
+          终点站
+          <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
+          </v-data-table>
+        </v-col>
+
+        <v-col cols="3">
+          单行站
+          <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-card>
+  </div>
+</div>
+
 </template>
   
-  <script>
-  export default {
-  
-  }
-  </script>
-  
-  <style>
-  
-  </style>
-</template>
 
 
 <script>
@@ -100,8 +116,9 @@
       directional:null,
       platforms:[],
       admins: [
-        ['Management', 'mdi-account-multiple-outline'],
-        ['Settings', 'mdi-cog-outline'],
+        ['停靠路线最多的站点','mdi-account-multiple-outline'],
+        ['统计换乘线路数量', 'mdi-account-multiple-outline'],
+        ['统计特殊站台的数量', 'mdi-cog-outline'],
       ],
       cruds: [
         ['Create', 'mdi-plus-outline'],
@@ -109,19 +126,21 @@
         ['Update', 'mdi-update'],
         ['Delete', 'mdi-delete'],
       ],
+      headers:[],
+      underground:[],
     }),
     methods:{
-      getBasicInfo(){
+      getPlatformWithMostRoutes(){
         let that=this;
-        console.log(this.line_id);
-        axios.get('http://localhost:8081/nosql/LineController/listLineInfo',  {
+        
+        axios.get('http://localhost:8081/nosql/StationController/listNMostLine',  {
             params: {
-              line_id:this.line_id
+              num:1000
             }
           })
             .then(response => {
-              that.basicInfo = response.data;
               console.log(that.basicInfo);
+              that.platforms=response.data;
               that.returned=1;
             })
             .catch(error => {
@@ -129,6 +148,8 @@
             })
             .finally(() => {
               this.loading = false;
+              this.headers=["站台名","经过线路数","经过线路名"];
+              
             });
       },
       
@@ -136,7 +157,7 @@
           this.loading = true;
           let that = this;
           let param=that.line_id+'路'+that.directional;
-          axios.get('http://localhost:8081/nosql/LineController/listShortestRouteByStationId?start=16115&end=14768',  
+          axios.get('http://localhost:8081/nosql/LineController/listLineTypeCount',  
           {
             params: {
               name:param,
@@ -162,7 +183,7 @@
           this.loading = true;
           let that = this;
           let param=that.line_id+'路'+that.directional;
-          axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
+          axios.get('http://localhost:8081/nosql/LineController/listTransLineCount?lineName=261%E8%B7%AF%E4%B8%8A%E8%A1%8C',  {
           params: {
             name:param
           }
