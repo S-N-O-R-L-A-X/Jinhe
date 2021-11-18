@@ -2,14 +2,58 @@
 <div>
   <v-navigation-drawer width="300" app clipped>
     <v-card height="100%" color="amber">
+      
       <v-list>
-        <v-list-item @click="getPlatformWithMostRoutes()">
+        <v-list-item>
           <v-list-item-icon>
             <v-icon>mdi-home</v-icon>
           </v-list-item-icon>
-          <v-list-item-content>停靠路线最多的站点</v-list-item-content>
+
+          <v-list-item-title>a</v-list-item-title>
         </v-list-item>
-      </v-list>  
+
+        <v-list-group
+          :value="true"
+          prepend-icon="mdi-account-circle"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>Users</v-list-item-title>
+          </template>
+
+          <v-list-group :value="true" no-action sub-group>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Admin</v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item v-for="([title, icon], i) in admins" :key="i" link><!--@click="functions[i]" -->
+              <v-list-item-title v-text="title"></v-list-item-title>
+
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+
+          <v-list-group no-action sub-group>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Actions</v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item v-for="([title, icon], i) in cruds" :key="i" link>
+              <v-list-item-title v-text="title"></v-list-item-title>
+
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+        </v-list-group>
+      </v-list>
+      
     </v-card>
   </v-navigation-drawer>
 
@@ -67,7 +111,6 @@
       descriptionLimit: 30,
       entries: [],
       isLoading: false,
-      items: [],
       line_id: null,
       search: null,
       returned:0,
@@ -88,9 +131,9 @@
         ['Delete', 'mdi-delete'],
       ],
       headers:[],
-      items:[],
       underground:[],
       lines:[],
+      funcs:[getPlatformWithMostRoutes(),],
     }),
     methods:{
       getPlatformWithMostRoutes(){
@@ -98,20 +141,21 @@
         
         axios.get('http://localhost:8081/nosql/StationController/listNMostLine',  {
             params: {
-              num:100
+              num:1000
             }
           })
             .then(response => {
+              console.log(that.basicInfo);
               that.platforms=response.data;
-              console.log(that.platforms);
+              that.returned=1;
             })
             .catch(error => {
               alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
             })
             .finally(() => {
-              this.returned=1;
               this.loading = false;
-              this.headers=[{text:'站台名',value:'stationName'},{text:'经过线路数',value:'lineNum'},{text:"经过线路名",value:'lineName'}];
+              this.headers=["站台名","经过线路数","经过线路名"];
+              
             });
       },
       
@@ -171,5 +215,53 @@
       }
     },
     
+    computed: {
+      fields () {
+        if (!this.line_id) return []
+
+        return Object.keys(this.line_id).map(key => {
+          return {
+            key,
+            value: this.line_id[key] || 'n/a',
+          }
+        })
+      },
+      items () {
+        return this.entries.map(entry => {
+          const Description = entry.Description.length > this.descriptionLimit
+            ? entry.Description.slice(0, this.descriptionLimit) + '...'
+            : entry.Description
+
+          return Object.assign({}, entry, { Description })
+        })
+      },
+    },
+
+    watch: {
+      search (val) {
+        // Items have already been loaded
+        if (this.items.length > 0) 
+          return ;
+
+        // Items have already been requested
+        if (this.isLoading) 
+          return ;
+
+        this.isLoading = true
+
+        // Lazily load input items
+        // fetch('https://api.publicapis.org/entries')
+        //   .then(res => res.json())
+        //   .then(res => {
+        //     const { count, entries } = res
+        //     this.count = count
+        //     this.entries = entries
+        //   })
+        //   .catch(err => {
+        //     console.log(err)
+        //   })
+        //   .finally(() => (this.isLoading = false))
+      },
+    },
   }
 </script>

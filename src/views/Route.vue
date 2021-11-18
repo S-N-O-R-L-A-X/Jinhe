@@ -71,7 +71,6 @@
                       <v-timeline dense>
                         <v-timeline-item v-for="platform of route_withID.alongStation" small>
                           {{platform.name}} {{platform.english}}
-
                         </v-timeline-item>
                       </v-timeline>
                     </v-sheet>
@@ -88,12 +87,16 @@
             <v-row align="center">
               <v-col>
                 <v-card color="light-blue lighten-3"  flat>
-                  <v-card-title>{{n}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
-                    <v-sheet height="300">
-                      <v-timeline>
-                        <v-timeline-item v-for="(alongStation,index) in alongStations" :key="i" small>
-                          {{alongStations[index].name}} {{transLines[index]}}
-
+                  <v-card-title>共{{n}}站 <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
+                    <v-sheet class="overflow-y-auto" height="300">
+                      <v-timeline dense>
+                        <v-timeline-item v-for="(alongStation,index) in alongStations" :key="index" small>
+                          <v-card v-if="index===0||transLines[index]===transLines[index-1]">
+                            {{alongStations[index].name}} {{transLines[index]}}
+                          </v-card>
+                          <v-card v-else>
+                            {{alongStations[index].name}} 换乘<v-icon>mdi-exchange</v-icon> {{transLines[index]}}
+                          </v-card>
                         </v-timeline-item>
                       </v-timeline>
                     </v-sheet>
@@ -111,10 +114,11 @@
                   <v-card-title>{{route_withID.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
                     <v-sheet class="overflow-y-auto" height="400">
                       <v-timeline dense>
-                        <v-timeline-item v-for="i in n" :key="i" small>
+                        <!-- <v-timeline-item v-for="i in n" :key="i" small>
+                          
                           {{alongStations[i].name}} {{transLines[i]}}
 
-                        </v-timeline-item>
+                        </v-timeline-item> -->
                       </v-timeline>
                     </v-sheet>
                 </v-card>
@@ -201,8 +205,8 @@
               this.returned=2;
               this.n=this.alongStations.length;
               
-              console.log(this.alongStations);
-              console.log(this.alongStations[0].name);
+              // console.log(this.alongStations);
+              // console.log(this.alongStations[0].name);
           });
       },
 
@@ -231,8 +235,8 @@
 
       clearAll(){
         this.line_id = null;
-        this.returned=0;
-        this.directional=null;
+        this.starting=null;
+        this.destination=null;
       }
     },
     
