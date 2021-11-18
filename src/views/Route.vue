@@ -56,17 +56,20 @@
                     <v-card-text>
                         <v-row class="mb-4" align="center">
                         <v-col cols="6">
-                            单次时间：{{route_withID.onewayTime}} <v-icon>mdi-alarm-check</v-icon>
+                            运行时间：{{route_withID.runtime}} <v-icon>mdi-alarm-check</v-icon>
                         </v-col>
+
                         <v-col cols="6">
-                            <span v-show="route_withID.directional==='TRUE'">方向：双向<v-icon>mdi-swap-horizontal</v-icon></span>
-                            <span v-show="route_withID.directional==='FALSE'">方向：单向<v-icon>mdi-arrow-right</v-icon></span>
+                            <span v-show="up_or_down===true">线路运行方向：上行<v-icon>mdi-swap-horizontal</v-icon></span>
+                            <span v-show="up_or_down===false">线路运行方向：下行<v-icon>mdi-arrow-right</v-icon></span>
                         </v-col>                          
                         </v-row>
+                        沿路站点：
                     </v-card-text>
-                    <v-sheet class="overflow-y-auto" height="400">
+                    <v-sheet class="overflow-y-auto" height="300">
+                      
                       <v-timeline dense>
-                        <v-timeline-item v-for="platform of platforms" small>
+                        <v-timeline-item v-for="platform of route_withID.alongStation" small>
                           {{platform.name}} {{platform.english}}
 
                         </v-timeline-item>
@@ -82,22 +85,22 @@
 
         <v-expand-transition offset--x>
           <div v-show="returned===2">
-              <v-row align="center">
-                <v-col>
-                  <v-card color="light-blue lighten-3"  flat>
-                    <v-card-title>{{route_withID.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
-                      <v-sheet height="300">
-                        <v-timeline>
-                          <v-timeline-item v-for="platform of platforms" dense>
-                            {{platform.name}} {{platform.english}}
+            <v-row align="center">
+              <v-col>
+                <v-card color="light-blue lighten-3"  flat>
+                  <v-card-title>{{n}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
+                    <v-sheet height="300">
+                      <v-timeline>
+                        <v-timeline-item v-for="(alongStation,index) in alongStations" :key="i" small>
+                          {{alongStations[index].name}} {{transLines[index]}}
 
-                          </v-timeline-item>
-                        </v-timeline>
-                      </v-sheet>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </div>
+                        </v-timeline-item>
+                      </v-timeline>
+                    </v-sheet>
+                </v-card>
+              </v-col>
+            </v-row>
+          </div>
         </v-expand-transition>
 
         <v-expand-transition offset--x>
@@ -108,8 +111,8 @@
                   <v-card-title>{{route_withID.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
                     <v-sheet class="overflow-y-auto" height="400">
                       <v-timeline dense>
-                        <v-timeline-item v-for="platform of platforms" small>
-                          {{platform.name}} {{platform.english}}
+                        <v-timeline-item v-for="i in n" :key="i" small>
+                          {{alongStations[i].name}} {{transLines[i]}}
 
                         </v-timeline-item>
                       </v-timeline>
@@ -140,17 +143,21 @@
       window: 0,
       route_withID:{},
       directional:null,
-      platforms:[],
+      platforms:{},
       starting:null,
       destination:null,
+      up_or_down:null,
+      n:0,
+      alongStations:[],
+      transLines:[],
     }),
     methods:{
       getRoute_withID(){
         let that=this;
         console.log(this.line_id);
-        axios.get('http://localhost:8081/nosql/LineController/listRouteWithLineTen',  {
+        axios.get('http://localhost:8081/nosql/LineController/listRouteWithLine',  {
             params: {
-              line_id:this.line_id,
+              lineId:this.line_id,
               start:this.starting,
               end:this.destination
             }
@@ -165,6 +172,8 @@
             })
             .finally(() => {
               this.loading = false;
+              this.up_or_down=this.route_withID.direction.endsWith('上行');
+              console.log(this.up_or_down);
             });
       },
       
@@ -172,7 +181,7 @@
           this.loading = true;
           let that = this;
           
-          axios.get('http://localhost:8081/nosql/LineController/listShortestRouteByStationId',  {
+          axios.get('http://localhost:8081/nosql/LineController/listShortestRouteByStation',  {
           params: {
             start:this.starting,
             end:this.destination
@@ -180,7 +189,9 @@
           })
           .then(response => {
               that.platforms=response.data;
-              this.returned=2;
+              that.alongStations=response.data.alongStation;
+              that.transLines=response.data.transLine;
+              that.returned=2;
           })
           .catch(error => {
               alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
@@ -188,7 +199,10 @@
           .finally(() => {
               this.loading = false;
               this.returned=2;
-              console.log(this.platforms);
+              this.n=this.alongStations.length;
+              
+              console.log(this.alongStations);
+              console.log(this.alongStations[0].name);
           });
       },
 
