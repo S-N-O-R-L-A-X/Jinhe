@@ -9,6 +9,34 @@
           </v-list-item-icon>
           <v-list-item-content>停靠路线最多的站点</v-list-item-content>
         </v-list-item>
+
+        <v-list-item @click="getSpecialPlatforms()">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>统计特殊站台</v-list-item-content>
+        </v-list-item>
+
+        <v-list-item @click="getLineNumbers()">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>统计公交数量</v-list-item-content>
+        </v-list-item>
+
+        <v-list-item @click="getLinesWithMostPlatforms()">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>统计最多站点的线路</v-list-item-content>
+        </v-list-item>
+
+        <v-list-item @click="getLinesWithMostRunningTime()">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>统计运行时间最长的线路</v-list-item-content>
+        </v-list-item>
       </v-list>  
     </v-card>
   </v-navigation-drawer>
@@ -53,6 +81,16 @@
         </v-data-table>
     </v-card>
 
+    <v-card v-show="returned===4">
+        <v-data-table :headers="headers" :items="lines" :items-per-page="15" class="elevation-1">
+        </v-data-table>
+    </v-card>
+
+    <v-card v-show="returned===5">
+        <v-data-table :headers="headers" :items="lines" :items-per-page="15" class="elevation-1">
+        </v-data-table>
+    </v-card>
+
   </div>
 </div>
 
@@ -89,6 +127,7 @@
       ],
       headers:[],
       items:[],
+      endStation:[],
       underground:[],
       lines:[],
     }),
@@ -118,13 +157,9 @@
       getSpecialPlatforms(){
           this.loading = true;
           let that = this;
-          let param=that.line_id+'路'+that.directional;
-          axios.get('http://localhost:8081/nosql/LineController/listLineTypeCount',  
-          {
+          axios.get('http://localhost:8081/nosql/StationController/listCaseStation',{
             params: {
-              name:param,
-              start:starting,
-              end:destination
+              
             }
           })
           .then(response => {
@@ -136,7 +171,7 @@
           })
           .finally(() => {
               this.loading = false;
-              this.returned=2;
+              
               console.log(this.platforms);
           });
       },
@@ -145,9 +180,33 @@
           this.loading = true;
           let that = this;
           
-          axios.get('http://localhost:8081/nosql/LineController/listTransLineCount?lineName=261%E8%B7%AF%E4%B8%8A%E8%A1%8C',  {
+          axios.get('http://localhost:8081/nosql/LineController/listLineTypeCount',  {
+            params: {
+              
+            }
+          })
+          .then(response => {
+              that.lines=response.data;
+          })
+          .catch(error => {
+              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+          })
+          .finally(() => {
+              this.headers=[{text:'类型',value:'type'},{text:'数量',value:'count'}];
+
+              this.loading = false;
+              this.returned=3;
+              console.log(this.lines);
+          });
+      },
+
+      getLinesWithMostPlatforms(){
+          this.loading = true;
+          let that = this;
+          
+          axios.get('http://localhost:8081/nosql/LineController/listNMostStationLine',  {
           params: {
-            name:param
+            num:100
           }
           })
           .then(response => {
@@ -157,12 +216,39 @@
               alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
           })
           .finally(() => {
+              console.log(this.lines);
+              this.headers=[{text:'类型',value:'type'},{text:'数量',value:'count'}];
+
               this.loading = false;
-              this.returned=3;
-              console.log(this.platforms);
+              this.returned=4;
+              
           });
       },
 
+      getLinesWithMostRunningTime(){
+          this.loading = true;
+          let that = this;
+          
+          axios.get('http://localhost:8081/nosql/LineController/listNMostTimeLine',  {
+          params: {
+            num:100
+          }
+          })
+          .then(response => {
+              that.lines=response.data;
+          })
+          .catch(error => {
+              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+          })
+          .finally(() => {
+              console.log(this.lines);
+              this.headers=[{text:'类型',value:'type'},{text:'运行时间(单位：分钟)',value:'time'}];
+
+              this.loading = false;
+              this.returned=5;
+              
+          });
+      },
 
       clearAll(){
         this.line_id = null;
