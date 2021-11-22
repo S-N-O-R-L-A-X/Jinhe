@@ -37,6 +37,13 @@
           </v-list-item-icon>
           <v-list-item-content>统计运行时间最长的线路</v-list-item-content>
         </v-list-item>
+
+        <v-list-item @click="getNeighbourPlatformsWithMostLines()">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>查询连接两个站台之间线路最多的两个站台</v-list-item-content>
+        </v-list-item>
       </v-list>  
     </v-card>
   </v-navigation-drawer>
@@ -52,25 +59,26 @@
       <v-row>
         <v-col cols="3">
           地铁站
-          <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
+      
+          <v-data-table :headers="headers1" :items="platforms.subwayName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
 
         <v-col cols="3">
           起点站
-          <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
+          <v-data-table :headers="headers2" :items="platforms.initialName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
 
         <v-col cols="3">
           终点站
-          <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
+          <v-data-table :headers="headers3" :items="platforms.endName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
 
         <v-col cols="3">
           单行站
-          <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
+          <v-data-table :headers="headers4" :items="endName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
       </v-row>
@@ -91,6 +99,10 @@
         </v-data-table>
     </v-card>
 
+    <v-card v-show="returned===6">
+        <v-data-table :headers="headers" :items="platforms" :items-per-page="15" class="elevation-1">
+        </v-data-table>
+    </v-card>
   </div>
 </div>
 
@@ -127,9 +139,15 @@
       ],
       headers:[],
       items:[],
-      endStation:[],
+      initialName:[],
+      endName:[],
       underground:[],
       lines:[],
+      headers1:[],
+      headers2:[],
+      headers3:[],
+      headers4:[],
+      
     }),
     methods:{
       getPlatformWithMostRoutes(){
@@ -164,6 +182,7 @@
           })
           .then(response => {
               that.platforms=response.data;
+              
               this.returned=2;
           })
           .catch(error => {
@@ -172,7 +191,13 @@
           .finally(() => {
               this.loading = false;
               
+              
+              this.headers1=[{text:"地铁站",value:"subwayName"}];
+              this.headers2=[{text:"起点站",value:"initialName"}];
+              this.headers3=[{text:"终点站",value:"endName"}];
+              this.headers4=[{text:"单行站",value:"endName"}];
               console.log(this.platforms);
+              console.log(this.endName);
           });
       },
 
@@ -249,6 +274,32 @@
               
           });
       },
+
+      getNeighbourPlatformsWithMostLines(){
+          this.loading = true;
+          let that = this;
+          
+          axios.get('http://localhost:8081/nosql/StationController/listNMostLineStation',  {
+          params: {
+            num:100
+          }
+          })
+          .then(response => {
+              that.platforms=response.data;
+          })
+          .catch(error => {
+              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+          })
+          .finally(() => {
+              console.log(this.lines);
+              this.headers=[{text:'上一站',value:'fromStation'},{text:'下一站',value:'toStation'},{text:'线路数量',value:'lineCount'}];
+
+              this.loading = false;
+              this.returned=6;
+              
+          });
+      },
+      
 
       clearAll(){
         this.line_id = null;

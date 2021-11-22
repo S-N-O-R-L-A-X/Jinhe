@@ -8,28 +8,23 @@
     <v-row>
       <v-col cols="6">
     <v-card-text>
-      <v-text-field v-model="line_id" placeholder="请输入线路名" label="请输入线路名"></v-text-field>
+      <v-text-field v-model="platform" placeholder="请输入站台名" label="请输入站台名"></v-text-field>
+      <v-text-field v-model="platform" placeholder="请输入站台名" label="请输入站台名"></v-text-field>
+
     </v-card-text>
 
-    <v-card-actions>
-      <v-radio-group v-model="directional">
-          <!-- <v-radio label="不区分上下行"></v-radio> -->
-          <v-radio label="上行" value="上行"></v-radio>
-          <v-radio label="下行" value="下行"></v-radio>
-      </v-radio-group>
-    </v-card-actions>
     
     <v-divider></v-divider>
     
     <v-card-actions>
-      <v-btn color="amber darken-3" @click="getPlatform()">
-        Search
+      <v-btn color="amber darken-3" @click="getAllLines()">
+        查询经过该站的所有路线
         <v-icon right>
           mdi-close-circle
         </v-icon>
       </v-btn>
       
-      <v-btn :disabled="!line_id" color="grey darken-3" @click="clearAll()">
+      <v-btn :disabled="!platform" color="grey darken-3" @click="clearAll()">
         Clear
         <v-icon right>
           mdi-close-circle
@@ -40,14 +35,9 @@
     <v-col cols="6">
         <v-expand-transition offset--x>
           <div v-show="returned===1">
-            <v-row align="center">
-              <v-timeline>
-                <v-timeline-item v-for="platform of platforms" dense>
-                  {{platform.name}} {{platform.english}}
+            <v-data-table :headers="headers" :items="lines" :items-per-page="15" class="elevation-1">
+            </v-data-table>
 
-                </v-timeline-item>
-              </v-timeline>
-            </v-row>
           </div>
         </v-expand-transition>
       </v-col>
@@ -63,26 +53,28 @@ export default {
     data: () => ({
       descriptionLimit: 30,
       isLoading: false,
-      line_id: null,
       search: null,
       returned:0,
       length: 3,
       window: 0,
       directional:null,
+      platform:null,
       platforms:[],
+      headers:[],
+      lines:[],
     }),
     methods: {
-        getPlatform(){
+        getAllLines(){
             this.loading = true;
             let that = this;
-            let param=that.line_id+'路'+that.directional;
-            axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
+            axios.get('http://localhost:8081/nosql/LineController/listAlongLine?',  {
             params: {
-              name:param
+              name:this.platform
+              
             }
             })
             .then(response => {
-                that.platforms=response.data;
+                that.lines=response.data;
             })
             .catch(error => {
                 alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
@@ -90,7 +82,8 @@ export default {
             .finally(() => {
                 this.loading = false;
                 this.returned=1;
-                console.log(this.platforms);
+                this.headers=[{text:"id",value:"id"},{text:"经过的路线名",value:"alongLine"}]
+                // console.log(this.platforms);
             });
         },
         
