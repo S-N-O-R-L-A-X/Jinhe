@@ -95,3 +95,5 @@ You can run the following command in powershell to check whether node.js has bee
 1.查询线路功能不足：没有该线路时未inform使用者
 
 2.按钮的屏蔽
+
+3.单向线路无法查询站台信息
