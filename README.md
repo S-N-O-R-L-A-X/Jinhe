@@ -58,7 +58,9 @@ Statistics getSpecialPlatforms
 
 Statistics getLineNumbers()
 
-13.查询两条线路重复的站点名 。 Analysis getDuplicatePlatforms()
+13.查询两条线路重复的站点名 。 
+
+Analysis getDuplicatePlatforms()
 
 15.查询连接两个站台之间线路最多的两个站台并且按照降序排列，显示前15个。 Statistics getNeighbourPlatformsWithMostLines()
 
