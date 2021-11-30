@@ -72,6 +72,10 @@ export default {
               
           });
         },
+        clearAll(){
+          this.line1=null;
+          this.line2=null;
+        }
     }
 }
 </script>

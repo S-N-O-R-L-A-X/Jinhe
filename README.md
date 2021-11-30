@@ -28,7 +28,11 @@ You can run the following command in powershell to check whether node.js has bee
 
 1.查询30路公交的基本信息。
 
-2.查询2路上行的全部站点信息。(方向性、区分上下行、顺序性) 
+Info getBasicInfo()
+
+2.查询2路上行的全部站点信息。(方向性、区分上下行、顺序性)
+
+Info getPlatform() 
 
 3.查询锦城广场站停靠的所有线路。 (同名站点按ID分组)  Platform getAllLines()
 
@@ -38,15 +42,29 @@ You can run the following command in powershell to check whether node.js has bee
 
 10.统计停靠路线最多的站点(按照id统计)并排序，显示前15个。
 
+Statistics 	getPlatformWithMostRoutes()
+
+11.统计地铁站数量(以地铁开头)、起点站(末尾标识始发站)数量、终点站(末尾标识终点站)数量、单行站(比较上下行确定单行站)数量。并返回站点名，注意去重。 
+
+Statistics getSpecialPlatforms
+
+未完成单行站
+
 12.分组统计常规公交(包括干线、支线、城乡线、驳接线、社区线)、快速公交(K字开头)、高峰公交(G字开头)、夜班公交(N字开头)的数量。
+
+Statistics getLineNumbers()
 
 13.查询两条线路重复的站点名 。 Analysis getDuplicatePlatforms()
 
-15.查询连接两个站台之间线路最多的两个站台并且按照降序排列，显示前15个。 Statistics    getNeighbourPlatformsWithMostLines()
+15.查询连接两个站台之间线路最多的两个站台并且按照降序排列，显示前15个。 Statistics getNeighbourPlatformsWithMostLines()
 
-16.根据站点数量对线路进行排序
+16.根据站点数量对线路进行排序 
+
+Statistics getLinesWithMostPlatforms()
 
 17.根据运行时间对线路进行排序。
+
+Statistics getLinesWithMostRunningTime()
 
 
 
@@ -58,7 +76,7 @@ You can run the following command in powershell to check whether node.js has bee
 
 
 
-11.统计地铁站数量(以地铁开头)、起点站(末尾标识始发站)数量、终点站(末尾标识终点站)数量、单行站(比较上下行确定单行站)数量。并返回站点名，注意去重。
+
 
 
 

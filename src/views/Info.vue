@@ -32,7 +32,7 @@
         </v-icon>
       </v-btn>
       
-      <v-btn color="amber darken-3" :disabled="directional==='off'" @click="getShift()">
+      <v-btn color="amber darken-3"  @click="getShift()">
         查询全部班次
         <v-icon right>
           mdi-magnify-expand
@@ -105,13 +105,10 @@
                 <v-col>
                   <v-card color="light-blue lighten-3"  flat>
                     <v-card-title>{{basicInfo.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
-                      <v-sheet height="300">
-                        <v-timeline>
-                          <v-timeline-item v-for="platform of platforms" dense>
-                            {{platform.name}} {{platform.english}}
+                      <v-sheet class="overflow-y-auto" height="300">
+                        <v-data-table :headers="headers" :items="items"  :items-per-page="30">
 
-                          </v-timeline-item>
-                        </v-timeline>
+                        </v-data-table>
                       </v-sheet>
                   </v-card>
                 </v-col>
@@ -160,7 +157,9 @@
       basicInfo:{},
       directional:null,
       platforms:[],
-      
+      headers:[],
+      platformsWithTime:{},
+      newTime:[],
     }),
     methods:{
       getBasicInfo(){
@@ -187,17 +186,20 @@
       getShift(){
           this.loading = true;
           let that = this;
-          let param=that.line_id+'路'+that.directional;
-          axios.get('http://localhost:8081/nosql/LineController/listShortestRouteByStationId?start=16115&end=14768',  
+          let param=that.line_id+'路';
+          if(this.directional!==null&&this.directional!=="off"){
+            param+=that.directional;
+          }
+          
+          axios.get('http://localhost:8081/nosql/StationController/listDepartInfo',  
           {
             params: {
-              name:param,
-              start:starting,
-              end:destination
+              name:param
             }
           })
           .then(response => {
               that.platforms=response.data;
+              console.log(this.platforms);
               this.returned=2;
           })
           .catch(error => {
@@ -206,7 +208,18 @@
           .finally(() => {
               this.loading = false;
               this.returned=2;
-              console.log(this.platforms);
+              // this.headers.push({text:"aa",})
+              let r=that.platforms.stationList.length,c=that.platforms.time.length;
+              this.newTime=new Array(r).fill(0).map(()=>new Array(c).fill(0))
+              for(let i=0; i<r;++i){
+                  for(let j=0;j<c;++j){
+                      this.newTime[i][j]=that.platforms.time[j][i];
+                  }
+              }
+              for(let i=0;i<r;++i){
+                this.headers.push({text:"aa",value:""})
+              }
+              
           });
       },
 

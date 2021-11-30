@@ -192,12 +192,14 @@
               this.loading = false;
               
               
-              this.headers1=[{text:"地铁站",value:"subwayName"}];
-              this.headers2=[{text:"起点站",value:"initialName"}];
-              this.headers3=[{text:"终点站",value:"endName"}];
+              this.headers1=[{text:"id",value:"id"},{text:"地铁站",value:"name"}];
+              this.headers2=[{text:"id",value:"id"},{text:"起点站",value:"name"}];
+              this.headers3=[{text:"id",value:"id"},{text:"终点站",value:"name"}];
               this.headers4=[{text:"单行站",value:"endName"}];
+              // this.endName=that.platforms.endName;
+              // this.
               console.log(this.platforms);
-              console.log(this.endName);
+              // console.log(this.endName);
           });
       },
 
