@@ -10,8 +10,15 @@
             <v-text-field v-model="line2" placeholder="请输入线路2" label="请输入线路2"></v-text-field>
         </v-card-text>
         <v-divider></v-divider>
-        <v-btn color="amber darken-3" @click="getDuplicatePlatforms()">
+        <v-btn color="amber darken-3" :disabled="!line1||!line2" @click="getDuplicatePlatforms()">
             查询两条线路重复的站点名
+            <v-icon right>
+            mdi-close-circle
+            </v-icon>
+        </v-btn>
+
+        <v-btn color="amber darken-3" :disabled="!line1||line2" @click="getDuplicatePlatforms()">
+            查询线路换乘情况
             <v-icon right>
             mdi-close-circle
             </v-icon>
@@ -47,6 +54,31 @@ export default {
         returned:0,
     }),
     methods:{
+        getDuplicatePlatforms(){
+          this.loading = true;
+          let that = this;
+          
+          axios.get('http://localhost:8081/nosql/StationController/listCrossStation',  {
+          params: {
+            line1:this.line1,
+            line2:this.line2,
+          }
+          })
+          .then(response => {
+              that.platforms=response.data;
+          })
+          .catch(error => {
+              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+          })
+          .finally(() => {
+              console.log(this.platforms);
+              this.headers=[{text:'上一站',value:'fromStation'},{text:'下一站',value:'toStation'},{text:'线路数量',value:'lineCount'}];
+              
+              this.loading = false;
+              this.returned=1;
+              
+          });
+        },
         getDuplicatePlatforms(){
           this.loading = true;
           let that = this;

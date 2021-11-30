@@ -34,9 +34,13 @@ Info getBasicInfo()
 
 Info getPlatform() 
 
-3.查询锦城广场站停靠的所有线路。 (同名站点按ID分组)  Platform getAllLines()
+3.查询锦城广场站停靠的所有线路。 (同名站点按ID分组)  
+
+Platform getAllLines()
 
 4.查询乘坐10路从大悦城到小吃街，线路的运行方向(上行或下行)、沿路站点、运行时间
+
+
 
 5.查询从id为16115的站台(红瓦寺)到id为14768的站台(动物园)的最短路径。
 
@@ -113,3 +117,5 @@ Statistics getLinesWithMostRunningTime()
 1.查询线路功能不足：没有该线路时未inform使用者
 
 2.按钮的屏蔽
+
+3.单向线路无法查询站台信息
