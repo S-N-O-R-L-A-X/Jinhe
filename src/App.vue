@@ -24,6 +24,27 @@
         <router-view/>
       </v-container>
     </v-main>
+    <v-footer padless dark>
+      <v-card class="flex" flat tile>
+       <v-card-title class="teal">
+        <strong class="subheading">This is done by Xu and Huang.</strong>
+        <v-spacer></v-spacer> {{ new Date().getFullYear() }}
+        
+      </v-card-title>
+
+      <v-card-text class="py-2 white--text text-center">
+         <v-btn @click="jump">
+           
+          <v-icon size="24px">
+            mdi-github
+          </v-icon>
+          github
+        </v-btn>
+      </v-card-text>
+
+        
+      </v-card>
+    </v-footer>
   </v-app>
 </template>
 
@@ -35,6 +56,12 @@ export default {
   data: () => ({
     //
   }),
+  methods:{
+    jump(){
+        // window.location.href="https://github.com/S-N-O-R-L-A-X/Jinhe";
+        window.open("https://github.com/S-N-O-R-L-A-X/Jinhe","_blank");
+    }
+  }
 };
 </script>
 

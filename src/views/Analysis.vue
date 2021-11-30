@@ -38,6 +38,17 @@
               </v-list>
           </div>
         </v-expand-transition>
+
+        <v-expand-transition offset--x>
+          <div v-show="returned===2">
+              <p>共{{platforms.count}}个重复站点名</p>
+              <v-list v-for="platform of platforms.crossStation" dense>
+                  <v-list-item>{{platform.name}} {{platform.english}}</v-list-item>
+              </v-list>
+              <v-data-table>
+              </v-data-table>
+          </div>
+        </v-expand-transition>
       </v-col>
     </v-row>
   </v-card>
@@ -79,14 +90,14 @@ export default {
               
           });
         },
-        getDuplicatePlatforms(){
+        getExchangeRoutes(){
           this.loading = true;
           let that = this;
           
-          axios.get('http://localhost:8081/nosql/StationController/listCrossStation',  {
+          axios.get('http://localhost:8081/nosql/LineController/listTransLineStation',  {
           params: {
-            line1:this.line1,
-            line2:this.line2,
+            lineName:this.line1,
+            
           }
           })
           .then(response => {
@@ -100,7 +111,7 @@ export default {
               this.headers=[{text:'上一站',value:'fromStation'},{text:'下一站',value:'toStation'},{text:'线路数量',value:'lineCount'}];
               
               this.loading = false;
-              this.returned=1;
+              this.returned=2;
               
           });
         },
