@@ -55,10 +55,19 @@
           </v-toolbar>
           <template>
             <v-stepper v-model="e1" vertical>
+              <v-stepper-header>
+                
                 <v-stepper-step :complete="e1>1" step="1">Name of step 1</v-stepper-step>
-                 <v-stepper-content step="1">
+                <v-divider></v-divider>
+                <v-stepper-step :complete="e1>2" step="2">Name of step 2</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="3">Name of step 3</v-stepper-step>
+              </v-stepper-header>
+
+              <v-stepper-items>
+                <v-stepper-content step="1">
                   <v-card  color="white">
-                    <v-card-title>输入基本信息</v-card-title>
+                    <v-card-title>输入信息</v-card-title>
                     <v-row>
                       <v-col cols="3">
                         <v-text-field v-model="id" label="id"></v-text-field>
@@ -84,11 +93,12 @@
                     <v-btn color="primary" @click="e1=2">Continue</v-btn>
                     <!-- <v-btn text :disabled="e1=1" @click="e1">Previous</v-btn> -->
                   </v-card>
+
+                  
                 </v-stepper-content>
-                
-                <v-stepper-step :complete="e1>2" step="2">Name of step 2</v-stepper-step>
+
                 <v-stepper-content step="2">
-                  <v-card color="white" height="500">
+                  <v-card color="grey lighten-1" height="500">
                     <v-row>
                       <v-col cols="3">运营开始时间：
                         <v-time-picker v-model="startTime" :allowed-minutes="allowedStep" class="mt-4" format="24hr"></v-time-picker>
@@ -103,10 +113,8 @@
                   <v-btn text>Cancel</v-btn>
                 </v-stepper-content>
 
-
-                <v-stepper-step step="3">Name of step 3</v-stepper-step>
                 <v-stepper-content step="3">
-                  <v-card color="white" height="500">
+                  <v-card color="grey lighten-1" height="500">
                     <v-row>
                       <v-col cols="6">
                         <v-text-field  v-model="id" :rules="rules.id" color="purple darken-2"
@@ -122,6 +130,7 @@
                   <v-btn color="primary" @click="e1=1">Continue</v-btn>
                   <v-btn text>Cancel</v-btn>
                 </v-stepper-content>
+              </v-stepper-items>
             </v-stepper>
           </template>
                     
