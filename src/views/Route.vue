@@ -17,22 +17,22 @@
     
       
     <v-card-actions>
-      <v-btn color="amber darken-3" @click="getRoute_withID()">
+      <v-btn color="amber darken-3" :disabled="!line_id||!starting||!destination" @click="getRouteWithID()">
         查询路线情况
         <v-icon right>
           mdi-close-circle
         </v-icon>
       </v-btn>
       
-      <v-btn color="amber darken-3" :disabled="directional==='off'" @click="getShortestRoute()">
+      <v-btn color="amber darken-3" :disabled="line_id||!starting||!destination" @click="getShortestRoute()">
         查询最短路线
         <v-icon right>
           mdi-close-circle
         </v-icon>
       </v-btn>
 
-      <v-btn color="amber darken-3" :disabled="directional==='off'" @click="getPlatform()">
-        查询全部站台
+      <v-btn color="amber darken-3" :disabled="line_id||starting||destination" @click="getPlatform()">
+        新增线路
         <v-icon right>
           mdi-close-circle
         </v-icon>
@@ -156,7 +156,7 @@
       transLines:[],
     }),
     methods:{
-      getRoute_withID(){
+      getRouteWithID(){
         let that=this;
         console.log(this.line_id);
         axios.get('http://localhost:8081/nosql/LineController/listRouteWithLine',  {

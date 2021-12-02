@@ -108,9 +108,6 @@
                       <v-sheet class="overflow-y-auto" height="400">
                         <v-data-table :headers="headers" :items="platforms"  :items-per-page="5">
                             <template v-slot:item.arrivedTime="{item}">
-                              <!-- <v-chip :color="blue" dark v-for="time of item.arrivedTime">
-                                {{time}}
-                              </v-chip> -->
                               <v-sheet class="overflow-y-auto" height="200">
                                 <v-timeline dense>
                                   <v-timeline-item v-for="time of item.arrivedTime" small>
