@@ -104,10 +104,22 @@
               <v-row align="center">
                 <v-col>
                   <v-card color="light-blue lighten-3"  flat>
-                    <v-card-title>{{basicInfo.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
-                      <v-sheet class="overflow-y-auto" height="300">
-                        <v-data-table :headers="headers" :items="items"  :items-per-page="30">
+                    <v-card-title> <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
+                      <v-sheet class="overflow-y-auto" height="400">
+                        <v-data-table :headers="headers" :items="platforms"  :items-per-page="5">
+                            <template v-slot:item.arrivedTime="{item}">
+                              <!-- <v-chip :color="blue" dark v-for="time of item.arrivedTime">
+                                {{time}}
+                              </v-chip> -->
+                              <v-sheet class="overflow-y-auto" height="200">
+                                <v-timeline dense>
+                                  <v-timeline-item v-for="time of item.arrivedTime" small>
+                                    {{time}} 
 
+                                  </v-timeline-item>
+                                </v-timeline>
+                              </v-sheet>
+                            </template>
                         </v-data-table>
                       </v-sheet>
                   </v-card>
@@ -158,7 +170,6 @@
       directional:null,
       platforms:[],
       headers:[],
-      platformsWithTime:{},
       newTime:[],
     }),
     methods:{
@@ -208,17 +219,17 @@
           .finally(() => {
               this.loading = false;
               this.returned=2;
-              // this.headers.push({text:"aa",})
-              let r=that.platforms.stationList.length,c=that.platforms.time.length;
-              this.newTime=new Array(r).fill(0).map(()=>new Array(c).fill(0))
-              for(let i=0; i<r;++i){
-                  for(let j=0;j<c;++j){
-                      this.newTime[i][j]=that.platforms.time[j][i];
-                  }
-              }
-              for(let i=0;i<r;++i){
-                this.headers.push({text:"aa",value:""})
-              }
+              this.headers=[{text:"name",value:"stationName"},{text:"time",value:"arrivedTime"}]
+              // let r=that.platforms.stationList.length,c=that.platforms.time.length;
+              // this.newTime=new Array(r).fill(0).map(()=>new Array(c).fill(0))
+              // for(let i=0; i<r;++i){
+              //     for(let j=0;j<c;++j){
+              //         this.newTime[i][j]=that.platforms.time[j][i];
+              //     }
+              // }
+              // for(let i=0;i<r;++i){
+              //   this.headers.push({text:"aa",value:""})
+              // }
               
           });
       },

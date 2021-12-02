@@ -44,6 +44,10 @@ Platform getAllLines()
 
 5.查询从id为16115的站台(红瓦寺)到id为14768的站台(动物园)的最短路径。
 
+7.查询某条线路某个方向的全部班次信息。
+
+Info getPlatform()
+
 10.统计停靠路线最多的站点(按照id统计)并排序，显示前15个。
 
 Statistics 	getPlatformWithMostRoutes()
