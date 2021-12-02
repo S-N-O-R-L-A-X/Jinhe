@@ -363,7 +363,7 @@
           this.loading = true;
           let that = this;
           
-          axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
+          axios.post('http://localhost:8081/nosql/StationController/listStationInfo',  {
           params: {
             
           }

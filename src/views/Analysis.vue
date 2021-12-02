@@ -17,7 +17,7 @@
             </v-icon>
         </v-btn>
 
-        <v-btn color="amber darken-3" :disabled="!line1||line2" @click="getDuplicatePlatforms()">
+        <v-btn color="amber darken-3" :disabled="!line1||line2" @click="getExchangeRoutes()">
             查询线路换乘情况
             <v-icon right>
             mdi-close-circle
@@ -41,11 +41,7 @@
 
         <v-expand-transition offset--x>
           <div v-show="returned===2">
-              <p>共{{platforms.count}}个重复站点名</p>
-              <v-list v-for="platform of platforms.crossStation" dense>
-                  <v-list-item>{{platform.name}} {{platform.english}}</v-list-item>
-              </v-list>
-              <v-data-table>
+              <v-data-table :headers="headers" :items="platforms">
               </v-data-table>
           </div>
         </v-expand-transition>
@@ -93,7 +89,7 @@ export default {
         getExchangeRoutes(){
           this.loading = true;
           let that = this;
-          
+          console.log(this.line1);
           axios.get('http://localhost:8081/nosql/LineController/listTransLineStation',  {
           params: {
             lineName:this.line1,
@@ -108,11 +104,9 @@ export default {
           })
           .finally(() => {
               console.log(this.platforms);
-              this.headers=[{text:'上一站',value:'fromStation'},{text:'下一站',value:'toStation'},{text:'线路数量',value:'lineCount'}];
-              
+              this.headers=[{text:'站台名',value:'name'},{text:'经过该站台的路线',value:'type'}];
               this.loading = false;
               this.returned=2;
-              
           });
         },
         clearAll(){

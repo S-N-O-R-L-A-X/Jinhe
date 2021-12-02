@@ -72,38 +72,6 @@ Statistics getLineNumbers()
 
 Analysis getDuplicatePlatforms()
 
-15.查询连接两个站台之间线路最多的两个站台并且按照降序排列，显示前15个。 Statistics getNeighbourPlatformsWithMostLines()
-
-16.根据站点数量对线路进行排序 
-
-Statistics getLinesWithMostPlatforms()
-
-17.根据运行时间对线路进行排序。
-
-Statistics getLinesWithMostRunningTime()
-
-
-
-19.添加一条站点数不少于10的线路。
-
-
-
-完成前端界面的功能
-
-
-
-
-
-
-
-
-
-后端完成但前端未完成的功能：
-
-
-
-
-
 14.查询换乘线路。换乘线路数即线路停靠的所有站台停靠其他线路的数量的总和。
 
 说明：
@@ -116,11 +84,27 @@ Statistics getLinesWithMostRunningTime()
 
 • 换乘线路注意去掉该线路本身。
 
+Analysis getExchangeRoutes()
+
+15.查询连接两个站台之间线路最多的两个站台并且按照降序排列，显示前15个。 Statistics getNeighbourPlatformsWithMostLines()
+
+16.根据站点数量对线路进行排序 
+
+Statistics getLinesWithMostPlatforms()
+
+17.根据运行时间对线路进行排序。
+
+Statistics getLinesWithMostRunningTime()
 
 
 
 
 
+后端完成但前端未完成的功能：
+
+19.添加一条站点数不少于10的线路。
+
+Route addNewLine
 
 
 
@@ -130,6 +114,4 @@ Statistics getLinesWithMostRunningTime()
 
 1.查询线路功能不足：没有该线路时未inform使用者
 
-2.按钮的屏蔽
 
-3.单向线路无法查询站台信息
