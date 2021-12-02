@@ -120,8 +120,8 @@
                         <v-text-field  v-model="id" :rules="rules.id" color="purple darken-2"
                           label="站台id" required></v-text-field>
                       </v-col>
-                      <v-col cols="3">两站时间间隔
-                        <v-slider v-model="timeCost" :label="两站时间间隔" :color="yellow" :thumb-color="red" thumb-label="always" :min=1>
+                      <v-col cols="3">
+                        <v-slider v-model="slide3.timeCost" :label="slide3.label" :color="slide3.color" :thumb-color="slide3.thumbColor" thumb-label="always" :min=1>
                         </v-slider>
                       </v-col>
                     </v-row>
@@ -260,11 +260,12 @@
       endTime:"0:00",
       e1:1,
       allTypes:[{text:'干线'},{text:'环线'}],
-      timeCost:null,
+      
       rules:{id:[val => (val || '').length > 0 || 'This field is required'],},
       id:null,
       slide1:{distance:1,label:"公里数",color:"yellow",thumbColor:"red"},
       slide2:{shift:1,label:"班车间隔",color:"yellow",thumbColor:"red"},
+      slide3:{timeCost:1,label:"两站时间间隔",color:"yellow",thumbColor:"red"},
     }),
     methods:{
       getRouteWithID(){

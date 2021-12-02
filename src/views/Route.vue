@@ -48,7 +48,7 @@
             <v-toolbar-title>增加线路</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <v-btn dark text @click="dialog = false">
+              <v-btn dark text @click="addNewLine()">
                 保存线路并添加
               </v-btn>
             </v-toolbar-items>
@@ -64,7 +64,7 @@
                         <v-text-field v-model="id" label="id"></v-text-field>
                       </v-col>
 
-                      <v-col cols="3">
+                      <v-col cols="3">路线总长度
                         <v-slider v-model="slide1.distance" :label="slide1.label" :color="slide1.color" :thumb-color="slide1.thumbColor" thumb-label="always" :min=10 :max=500>
                         </v-slider>
                       </v-col>
@@ -76,13 +76,12 @@
                           </v-overflow-btn>
                         </v-container>
                       </v-col>
-                      <v-col cols="3">
+                      <v-col cols="3">班车间隔
                         <v-slider v-model="slide2.shift" :label="slide2.label" :color="slide2.color" :thumb-color="slide2.thumbColor" thumb-label="always" :min=1>
                         </v-slider>
                       </v-col>
                     </v-row>
                     <v-btn color="primary" @click="e1=2">Continue</v-btn>
-                    <!-- <v-btn text :disabled="e1=1" @click="e1">Previous</v-btn> -->
                   </v-card>
                 </v-stepper-content>
                 
@@ -97,30 +96,40 @@
                         <v-time-picker v-model="endTime" :allowed-minutes="allowedStep" class="mt-4" format="24hr"></v-time-picker>
                       </v-col>
                     </v-row>
+                    <v-btn color="primary" @click="e1=3">Continue</v-btn>
                   </v-card>
 
-                  <v-btn color="primary" @click="e1=3">Continue</v-btn>
-                  <v-btn text>Cancel</v-btn>
                 </v-stepper-content>
 
 
                 <v-stepper-step step="3">Name of step 3</v-stepper-step>
                 <v-stepper-content step="3">
-                  <v-card color="white" height="500">
+                  <v-card color="white" height="400">
+                    <v-card-title>添加站台</v-card-title>
                     <v-row>
-                      <v-col cols="6">
-                        <v-text-field  v-model="id" :rules="rules.id" color="purple darken-2"
-                          label="站台id" required></v-text-field>
+                      <v-col cols="3">
+                        <v-text-field  v-model="platform_id" :rules="rules.id" color="purple darken-2" label="站台id" required></v-text-field>
                       </v-col>
                       <v-col cols="3">两站时间间隔
-                        <v-slider v-model="timeCost" :label="两站时间间隔" :color="yellow" :thumb-color="red" thumb-label="always" :min=1>
-                        </v-slider>
+                        <v-slider v-model="slide3.timeCost" :label="slide3.label" :color="slide3.color" :thumb-color="slide3.thumbColor" thumb-label="always" :min=1></v-slider>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-btn color="primary" :disabled="!platform_id" @click="addNewPlatforms()">添加站台</v-btn>
                       </v-col>
                     </v-row>
+                    
+                    <v-row>
+                      <v-col cols="12">
+                        <v-chip-group>
+                          <v-chip v-for="(newPlatform,idx) in newPlatforms" :key="idx">
+                            {{newPlatform.id}}:{{newPlatform.interval}}
+                          </v-chip>
+                        </v-chip-group>
+                      </v-col>
+                    </v-row>
+                    <v-btn color="primary" @click="e1=1">Continue</v-btn>
                   </v-card>
-
-                  <v-btn color="primary" @click="e1=1">Continue</v-btn>
-                  <v-btn text>Cancel</v-btn>
+                  
                 </v-stepper-content>
             </v-stepper>
           </template>
@@ -228,7 +237,7 @@
   import axios from "axios"
   export default {
     data: () => ({
-      descriptionLimit: 30,
+      
       entries: [],
       isLoading: false,
       line_id: null,
@@ -250,12 +259,16 @@
       startTime:"0:00",
       endTime:"0:00",
       e1:1,
-      allTypes:[{text:'干线'},{text:'环线'}],
-      timeCost:null,
-      rules:{id:[val => (val || '').length > 0 || 'This field is required'],},
       id:null,
-      slide1:{distance:1,label:"公里数",color:"yellow",thumbColor:"red"},
-      slide2:{shift:1,label:"班车间隔",color:"yellow",thumbColor:"red"},
+      allTypes:[{text:'干线'},{text:'环线'}],
+      
+      allowedStep: m => m % 10 === 0,
+      rules:{id:[val => (val || '').length > 0 || 'This field is required'],},
+      platform_id:null,
+      slide1:{distance:1,label:"单位：公里",color:"yellow",thumbColor:"red"},
+      slide2:{shift:1,label:"单位：分钟",color:"yellow",thumbColor:"red"},
+      slide3:{timeCost:1,label:"单位：分钟",color:"yellow",thumbColor:"red"},
+      newPlatforms:[],
     }),
     methods:{
       getRouteWithID(){
@@ -334,6 +347,39 @@
           });
       },
 
+      addNewPlatforms(){
+        let obj={};
+        obj.id=this.platform_id;
+        obj.interval=this.startTime;
+        if(this.newPlatforms.length>0){
+          obj.interval=this.slide3.timeCost;
+        }
+        this.newPlatforms.push(obj);
+        this.platform_id=null;
+        this.slide3.timeCost=1;
+      },
+
+      addNewLine(){
+          this.loading = true;
+          let that = this;
+          
+          axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
+          params: {
+            
+          }
+          })
+          .then(response => {
+              
+          })
+          .catch(error => {
+              alert('添加线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+          })
+          .finally(() => {
+              this.loading = false;
+              console.log(this.platforms);
+              this.dialog=false;
+          });
+      },
 
       clearAll(){
         this.line_id = null;
