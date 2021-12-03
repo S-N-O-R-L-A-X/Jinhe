@@ -106,7 +106,9 @@ Statistics getLinesWithMostRunningTime()
 
 Route addNewLine()
 
+20A.线路的删除
 
+Route deleteLine()
 
 
 

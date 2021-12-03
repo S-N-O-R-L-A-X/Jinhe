@@ -379,13 +379,13 @@
       addNewLine(){
           this.loading = true;
           let that = this,runtime=this.startTime+'-'+this.endTime;
-
-          if(!this.id||!this.route||!this.directional||!this.slide1.distance
+          
+          if(!this.id||!this.directional||!this.slide1.distance
           ||!this.startTime||!this.endTime||!this.newPlatforms){
-            
+            console.log("return!");
             return ;
           }
-          axios.post('http://localhost:8081/nosql/StationController/listStationInfo',  {
+          axios.post('api/nosql/StationController/listStationInfo',  {
           params: {
             line:{
               id:this.id,
@@ -412,8 +412,28 @@
           });
       },
 
+      deleteLine(){
+          this.loading = true;
+          let that = this,runtime=this.startTime+'-'+this.endTime;
+          axios.post('http://localhost:8081/nosql/LineController/deleteLine',  {
+          params: {
+              lineId:this.line_id,
+          }
+          })
+          .then(response => {
+              
+          })
+          .catch(error => {
+              alert('添加线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+          })
+          .finally(() => {
+              this.loading=false;
+              console.log(this.platforms);
+              this.dialog=false;
+          });
+      },
       clearAll(){
-        this.line_id = null;
+        this.line_id=null;
         this.starting=null;
         this.destination=null;
       }
