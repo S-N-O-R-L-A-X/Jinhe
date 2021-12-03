@@ -42,7 +42,7 @@
         </template>
         <v-card>
           <v-toolbar dark color="amber">
-            <v-btn icon dark @click="dialog = false">
+            <v-btn icon dark @click="dialog=false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
             <v-toolbar-title>增加线路</v-toolbar-title>
@@ -72,7 +72,7 @@
                       <v-col cols="3">
                         <v-container id="dropdown-example-3">
                           <v-overflow-btn class="my-2" :items="allTypes"
-                            label="线路类型" editable item-value="text">
+                            label="线路类型" editable item-value="type">
                           </v-overflow-btn>
                         </v-container>
                       </v-col>
@@ -80,6 +80,15 @@
                         <v-slider v-model="slide2.shift" :label="slide2.label" :color="slide2.color" :thumb-color="slide2.thumbColor" thumb-label="always" :min=1>
                         </v-slider>
                       </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-radio-group v-model="directional">
+                            <v-radio label="双向" value="true"></v-radio>
+                            <v-radio label="单向" value="false"></v-radio>
+                        </v-radio-group>
+                      </v-col>                          
+
                     </v-row>
                     <v-btn color="primary" @click="e1=2">Continue</v-btn>
                   </v-card>
@@ -122,7 +131,7 @@
                       <v-col cols="12">
                         <v-chip-group>
                           <v-chip v-for="(newPlatform,idx) in newPlatforms" :key="idx">
-                            {{newPlatform.id}}:{{newPlatform.interval}}
+                            {{newPlatform.id}}:{{newPlatform.runtime}}
                           </v-chip>
                         </v-chip-group>
                       </v-col>
@@ -137,8 +146,14 @@
         </v-card>
       </v-dialog>
       
+      <v-btn :disabled="!line_id" color="amber darken-3" @click="deleteRoute()">
+        删除路线
+        <v-icon right>
+          mdi-close-circle
+        </v-icon>
+      </v-btn>
 
-      <v-btn :disabled="!line_id" color="grey darken-3" @click="clearAll">
+      <v-btn :disabled="!line_id&&!starting&&!destination" color="grey darken-3" @click="clearAll">
         Clear
         <v-icon right>
           mdi-close-circle
@@ -259,8 +274,10 @@
       startTime:"0:00",
       endTime:"0:00",
       e1:1,
+      type:null,
       id:null,
-      allTypes:[{text:'干线'},{text:'环线'}],
+      allTypes:[{text:'干线'},{text:'环线'},{text:'夜班线'},{text:'高峰线'},{text:'支线'},
+      {text:'城乡线'},{text:'驳接线'},{text:'社区线'},{text:'快速公交'}],
       
       allowedStep: m => m % 10 === 0,
       rules:{id:[val => (val || '').length > 0 || 'This field is required'],},
@@ -350,9 +367,9 @@
       addNewPlatforms(){
         let obj={};
         obj.id=this.platform_id;
-        obj.interval=this.startTime;
+        obj.runtime=this.startTime;
         if(this.newPlatforms.length>0){
-          obj.interval=this.slide3.timeCost;
+          obj.runtime=this.slide3.timeCost;
         }
         this.newPlatforms.push(obj);
         this.platform_id=null;
@@ -361,10 +378,24 @@
 
       addNewLine(){
           this.loading = true;
-          let that = this;
-          
+          let that = this,runtime=this.startTime+'-'+this.endTime;
+
+          if(!this.id||!this.route||!this.directional||!this.slide1.distance
+          ||!this.startTime||!this.endTime||!this.newPlatforms){
+            
+            return ;
+          }
           axios.post('http://localhost:8081/nosql/StationController/listStationInfo',  {
           params: {
+            line:{
+              id:this.id,
+              directional:this.directional,
+              kilometer:this.slide1.distance,
+              runtime:runtime,
+              type:this.type,
+              interval:this.slide2.shift,
+            },
+            stationList: this.newPlatforms,
             
           }
           })
@@ -375,7 +406,7 @@
               alert('添加线路失败：无法连接到服务器，刷新重试。\n' + error.message);
           })
           .finally(() => {
-              this.loading = false;
+              this.loading=false;
               console.log(this.platforms);
               this.dialog=false;
           });

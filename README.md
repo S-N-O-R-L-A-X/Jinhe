@@ -104,7 +104,7 @@ Statistics getLinesWithMostRunningTime()
 
 19.添加一条站点数不少于10的线路。
 
-Route addNewLine
+Route addNewLine()
 
 
 
