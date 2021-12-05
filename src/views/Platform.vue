@@ -20,7 +20,7 @@
       <v-btn color="amber darken-3" @click="getAllLines()">
         查询经过该站的所有路线
         <v-icon right>
-          mdi-close-circle
+          mdi-magnify
         </v-icon>
       </v-btn>
       

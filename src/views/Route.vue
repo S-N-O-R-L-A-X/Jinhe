@@ -17,14 +17,14 @@
       <v-btn color="amber darken-3" :disabled="line_id===null||starting===null||destination===null" @click="getRouteWithID()">
         查询路线情况
         <v-icon right>
-          mdi-close-circle
+          mdi-magnify
         </v-icon>
       </v-btn>
       
       <v-btn color="amber darken-3" :disabled="line_id!==null||starting===null||destination===null" @click="getShortestRoute()">
         查询最短路线
         <v-icon right>
-          mdi-close-circle
+          mdi-magnify-expand
         </v-icon>
       </v-btn>
 
@@ -32,9 +32,9 @@
         <template v-slot:activator="{ on, attrs }">
           <v-btn color="amber darken-3" :disabled="line_id!==null||starting!==null||destination!==null" v-bind="attrs" v-on="on">
             新增线路
-            <v-icon right>
-              mdi-close-circle
-            </v-icon>
+            <!-- <v-icon right> -->
+              +
+            <!-- </v-icon> -->
           </v-btn>
         </template>
         <v-card>
@@ -114,7 +114,7 @@
                     <v-card-title>添加站台</v-card-title>
                     <v-row>
                       <v-col cols="3">
-                        <v-text-field  v-model="platform_id" :rules="rules.id" color="purple darken-2" label="站台id" required></v-text-field>
+                        <v-text-field  v-model="platform_id" :rules="rules.id" color="amber darken-1" label="站台id" required></v-text-field>
                       </v-col>
                       <v-col cols="3">两站时间间隔
                         <v-slider v-model="slide3.timeCost" :label="slide3.label" :color="slide3.color" :thumb-color="slide3.thumbColor" thumb-label="always" :min=1></v-slider>
@@ -279,9 +279,9 @@
       allowedStep: m => m % 10 === 0,
       rules:{id:[val => (val || '').length > 0 || 'This field is required'],},
       platform_id:null,
-      slide1:{distance:1,label:"单位：公里",color:"yellow",thumbColor:"red"},
-      slide2:{shift:1,label:"单位：分钟",color:"yellow",thumbColor:"red"},
-      slide3:{timeCost:1,label:"单位：分钟",color:"yellow",thumbColor:"red"},
+      slide1:{distance:1,label:"单位：公里",color:"yellow",thumbColor:"orange"},
+      slide2:{shift:1,label:"单位：分钟",color:"yellow",thumbColor:"orange"},
+      slide3:{timeCost:1,label:"单位：分钟",color:"yellow",thumbColor:"orange"},
       newPlatforms:[],
       message:null,
       snackbar:false,

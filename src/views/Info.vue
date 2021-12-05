@@ -25,21 +25,21 @@
     
       
     <v-card-actions>
-      <v-btn color="amber darken-3" @click="getBasicInfo()">
+      <v-btn color="amber darken-3" :disabled="line_id===null" @click="getBasicInfo()">
         查询线路基本信息
         <v-icon right>
           mdi-magnify
         </v-icon>
       </v-btn>
       
-      <v-btn color="amber darken-3"  @click="getShift()">
+      <v-btn color="amber darken-3" :disabled="line_id===null"  @click="getShift()">
         查询全部班次
         <v-icon right>
           mdi-magnify-expand
         </v-icon>
       </v-btn>
 
-      <v-btn color="amber darken-3" :disabled="directional==='off'" @click="getPlatform()">
+      <v-btn color="amber darken-3" :disabled="line_id===null" @click="getPlatform()">
         查询全部站台
         <v-icon right>
           mdi-database-search
@@ -170,6 +170,10 @@
       newTime:[],
     }),
     methods:{
+      checkRound(){
+        let reg=new RegExp(/^.*环线$/);
+        return reg.test(this.line_id);
+      },
       getBasicInfo(){
         let that=this;
         console.log(this.line_id);
@@ -236,7 +240,9 @@
       getPlatform(){
           this.loading = true;
           let that = this;
-          let param=that.line_id+'路'+that.directional;
+          let param=that.line_id+'路';
+          if(this.directional!=="off")
+            param+=that.directional;
           axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
           params: {
             name:param

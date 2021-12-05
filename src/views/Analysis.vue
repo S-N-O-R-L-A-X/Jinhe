@@ -13,14 +13,14 @@
         <v-btn color="amber darken-3" :disabled="!line1||!line2" @click="getDuplicatePlatforms()">
             查询两条线路重复的站点名
             <v-icon right>
-            mdi-close-circle
+            mdi-magnify
             </v-icon>
         </v-btn>
 
         <v-btn color="amber darken-3" :disabled="!line1||line2" @click="getExchangeRoutes()">
             查询线路换乘情况
             <v-icon right>
-            mdi-close-circle
+            mdi-magnify-expand
             </v-icon>
         </v-btn>
 
