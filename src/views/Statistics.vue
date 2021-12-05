@@ -163,7 +163,7 @@
               console.log(that.platforms);
             })
             .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
             })
             .finally(() => {
               this.returned=1;
@@ -186,7 +186,7 @@
               this.returned=2;
           })
           .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               this.loading = false;
@@ -216,7 +216,7 @@
               that.lines=response.data;
           })
           .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               this.headers=[{text:'类型',value:'type'},{text:'数量',value:'count'}];
@@ -240,7 +240,7 @@
               that.lines=response.data;
           })
           .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               console.log(this.lines);
@@ -265,7 +265,7 @@
               that.lines=response.data;
           })
           .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               console.log(this.lines);
@@ -290,7 +290,7 @@
               that.platforms=response.data;
           })
           .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               console.log(this.lines);

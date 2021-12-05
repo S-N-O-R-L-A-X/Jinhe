@@ -1,8 +1,5 @@
 <template>
-  <v-card
-    color="amber lighten-2"
-    dark
-  >
+  <v-card color="amber lighten-2" dark >
     <v-card-title class="text-h5 amber lighten-3">
       查询路线
     </v-card-title>
@@ -14,17 +11,17 @@
       <v-text-field v-model="destination" placeholder="请输入终点站" label="请输入终点站"></v-text-field>
     </v-card-text>
     <v-divider></v-divider>
-    
+    <v-snackbar v-model="snackbar" top color="success">{{message}}</v-snackbar>
       
     <v-card-actions>
-      <v-btn color="amber darken-3" :disabled="!line_id||!starting||!destination" @click="getRouteWithID()">
+      <v-btn color="amber darken-3" :disabled="line_id===null||starting===null||destination===null" @click="getRouteWithID()">
         查询路线情况
         <v-icon right>
           mdi-close-circle
         </v-icon>
       </v-btn>
       
-      <v-btn color="amber darken-3" :disabled="line_id||!starting||!destination" @click="getShortestRoute()">
+      <v-btn color="amber darken-3" :disabled="line_id!==null||starting===null||destination===null" @click="getShortestRoute()">
         查询最短路线
         <v-icon right>
           mdi-close-circle
@@ -33,7 +30,7 @@
 
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn color="amber darken-3" :disabled="line_id||starting||destination" v-bind="attrs" v-on="on">
+          <v-btn color="amber darken-3" :disabled="line_id!==null||starting!==null||destination!==null" v-bind="attrs" v-on="on">
             新增线路
             <v-icon right>
               mdi-close-circle
@@ -146,14 +143,14 @@
         </v-card>
       </v-dialog>
       
-      <v-btn :disabled="!line_id" color="amber darken-3" @click="deleteRoute()">
+      <v-btn :disabled="line_id===null" color="amber darken-3" @click="deleteLine()">
         删除路线
         <v-icon right>
           mdi-close-circle
         </v-icon>
       </v-btn>
 
-      <v-btn :disabled="!line_id&&!starting&&!destination" color="grey darken-3" @click="clearAll">
+      <v-btn :disabled="line_id===null&&starting===null&&destination===null" color="grey darken-3" @click="clearAll">
         Clear
         <v-icon right>
           mdi-close-circle
@@ -286,6 +283,8 @@
       slide2:{shift:1,label:"单位：分钟",color:"yellow",thumbColor:"red"},
       slide3:{timeCost:1,label:"单位：分钟",color:"yellow",thumbColor:"red"},
       newPlatforms:[],
+      message:null,
+      snackbar:false,
     }),
     methods:{
       getRouteWithID(){
@@ -304,7 +303,7 @@
               that.returned=1;
             })
             .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
             })
             .finally(() => {
               this.loading = false;
@@ -330,7 +329,7 @@
               that.returned=2;
           })
           .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               this.loading = false;
@@ -355,7 +354,7 @@
               that.platforms=response.data;
           })
           .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               this.loading = false;
@@ -400,36 +399,36 @@
           }
           })
           .then(response => {
-              
+              console.log(response);
+              this.message="创建线路成功！";
+              this.snackbar=true;
           })
           .catch(error => {
-              alert('添加线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('添加线路失败!\n' + error.message);
           })
           .finally(() => {
               this.loading=false;
-              console.log(this.platforms);
-              this.dialog=false;
+              this.dialog=false;              
           });
       },
 
       deleteLine(){
           this.loading = true;
-          let that = this,runtime=this.startTime+'-'+this.endTime;
+          let that = this;
           axios.post('http://localhost:8081/nosql/LineController/deleteLine',  {
           params: {
               lineId:this.line_id,
           }
           })
           .then(response => {
-              
+              this.snackbar=true;
+              this.message="删除线路成功！";
           })
           .catch(error => {
-              alert('添加线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('添加线路失败!\n' + error.message);
           })
           .finally(() => {
-              this.loading=false;
-              console.log(this.platforms);
-              this.dialog=false;
+            this.loading=false;
           });
       },
       clearAll(){

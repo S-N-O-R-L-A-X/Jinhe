@@ -132,7 +132,7 @@
               that.returned=1;
             })
             .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
             })
             .finally(() => {
               this.loading = false;
@@ -182,7 +182,7 @@
               this.returned=2;
           })
           .catch(error => {
-              alert('获取线路失败：无法连接到服务器，刷新重试。\n' + error.message);
+              alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               this.loading = false;
