@@ -1,7 +1,7 @@
 <template>
   <v-card color="amber lighten-2" dark>
     <v-card-title class="text-h5 amber lighten-3">
-      查询路线
+      查询路线交叉情况
     </v-card-title>
     <v-row>
       <v-col cols="6">

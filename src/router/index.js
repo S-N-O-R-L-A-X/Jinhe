@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Info from '../views/Info.vue'
-import Analysis from '../views/Analysis.vue'
+import CrossRoute from '../views/CrossRoute.vue'
 import Route from '../views/Route.vue'
 import Shift from '../views/Shift.vue'
 import Platform from '../views/Platform.vue'
@@ -30,9 +30,9 @@ const routes = [
     component: Info
   },
   {
-    path: '/analysis',
-    name: 'Analysis',
-    component: Analysis
+    path: '/crossRoute',
+    name: 'CrossRoute',
+    component: CrossRoute
   },
   {
     path: '/route',

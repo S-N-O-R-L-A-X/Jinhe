@@ -57,30 +57,30 @@
 
     <v-card v-show="returned===2">
       <v-row>
-        <v-col cols="3">
+        <v-col cols="4">
           地铁站
       
-          <v-data-table :headers="headers1" :items="platforms.subwayName" :items-per-page="15" class="elevation-1">
+          <v-data-table :headers="headers1" :items="specialPlatforms.subwayName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
 
-        <v-col cols="3">
+        <v-col cols="4">
           起点站
-          <v-data-table :headers="headers2" :items="platforms.initialName" :items-per-page="15" class="elevation-1">
+          <v-data-table :headers="headers2" :items="specialPlatforms.initialName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
 
-        <v-col cols="3">
+        <v-col cols="4">
           终点站
-          <v-data-table :headers="headers3" :items="platforms.endName" :items-per-page="15" class="elevation-1">
+          <v-data-table :headers="headers3" :items="specialPlatforms.endName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
 
-        <v-col cols="3">
+        <!-- <v-col cols="3">
           单行站
           <v-data-table :headers="headers4" :items="endName" :items-per-page="15" class="elevation-1">
           </v-data-table>
-        </v-col>
+        </v-col> -->
       </v-row>
     </v-card>
 
@@ -126,6 +126,7 @@
       basicInfo:{},
       directional:null,
       platforms:[],
+      specialPlatforms:[],
       admins: [
         ['停靠路线最多的站点','mdi-account-multiple-outline'],
         ['统计换乘线路数量', 'mdi-account-multiple-outline'],
@@ -181,8 +182,8 @@
             }
           })
           .then(response => {
-              that.platforms=response.data;
-              
+              that.specialPlatforms=response.data;
+              // console.log(this.platforms);
               this.returned=2;
           })
           .catch(error => {
@@ -195,11 +196,9 @@
               this.headers1=[{text:"id",value:"id"},{text:"地铁站",value:"name"}];
               this.headers2=[{text:"id",value:"id"},{text:"起点站",value:"name"}];
               this.headers3=[{text:"id",value:"id"},{text:"终点站",value:"name"}];
-              this.headers4=[{text:"单行站",value:"endName"}];
+              // this.headers4=[{text:"单行站",value:"endName"}];
               // this.endName=that.platforms.endName;
-              // this.
-              console.log(this.platforms);
-              // console.log(this.endName);
+              
           });
       },
 

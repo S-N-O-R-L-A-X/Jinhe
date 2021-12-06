@@ -31,10 +31,7 @@
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on, attrs }">
           <v-btn color="amber darken-3" :disabled="line_id!==null||starting!==null||destination!==null" v-bind="attrs" v-on="on">
-            新增线路
-            <!-- <v-icon right> -->
-              +
-            <!-- </v-icon> -->
+            新增线路 +
           </v-btn>
         </template>
         <v-card>
@@ -69,7 +66,7 @@
                       <v-col cols="3">
                         <v-container id="dropdown-example-3">
                           <v-overflow-btn class="my-2" :items="allTypes"
-                            label="线路类型" editable item-value="type">
+                            label="线路类型" editable item-value="type" v-model="type">
                           </v-overflow-btn>
                         </v-container>
                       </v-col>
@@ -143,6 +140,13 @@
         </v-card>
       </v-dialog>
       
+      <v-btn color="amber darken-3" @click="addNewLineTest()">
+        测试
+        <v-icon right>
+          mdi-close-circle
+        </v-icon>
+      </v-btn>
+
       <v-btn :disabled="line_id===null" color="amber darken-3" @click="deleteLine()">
         删除路线
         <v-icon right>
@@ -247,6 +251,7 @@
 </template>
 <script>
   import axios from "axios"
+  import QS from "qs"
   export default {
     data: () => ({
       
@@ -380,23 +385,22 @@
           let that = this,runtime=this.startTime+'-'+this.endTime;
           
           if(!this.id||!this.directional||!this.slide1.distance
-          ||!this.startTime||!this.endTime||!this.newPlatforms){
+          ||!this.startTime||!this.endTime||!this.newPlatforms||!this.type){
             console.log("return!");
             return ;
           }
-          axios.post('api/nosql/StationController/listStationInfo',  {
-          params: {
+
+          axios.post('api/nosql/LineController/insertLine',  {
             line:{
               id:this.id,
               directional:this.directional,
               kilometer:this.slide1.distance,
               runtime:runtime,
-              type:this.type,
               interval:this.slide2.shift,
+              type:this.type,
             },
             stationList: this.newPlatforms,
             
-          }
           })
           .then(response => {
               console.log(response);
@@ -411,7 +415,56 @@
               this.dialog=false;              
           });
       },
+      addNewLineTest(){
+        // axios.post('api/nosql/LineController/insertLine',  {
+        //     line:{
+        //       id:3,
+        //       directional:"TRUE",
+        //       kilometer:15,
+        //       runtime:"6:00-23:59",
+        //       interval:5,
+        //       type:"干线",
+        //     },
+        //     stationList: [{"id":"21460","runtime":"6:00"},{"id": "41394","runtime":"3"}],
+            
+        //   })
+        axios({
+          method:"post",
+          changeOrigin:"true",
+          url:"api/nosql/LineController/insertLine",
+          transformRequest:[
+            function(data){
+              return QS.stringify(data);
+            }
+          ],
+          data: {
+              line:{
+                id:3,
+                directional:true,
+                kilometer:15,
+                runtime:"6:00-23:59",
+                interval:5,
+                type:"strong",
+              },
+              stationList: [{"id":"21460","runtime":"6:00"},{"id": "41394","runtime":"3"}],
 
+          }
+        })
+          .then(response => {
+              console.log(response);
+              this.message="创建线路成功！";
+              this.snackbar=true;
+          })
+          .catch(error => {
+              alert('添加线路失败!\n' + error.message);
+          })
+          .finally(() => {
+              this.loading=false;
+              this.dialog=false;              
+          });
+
+      },
+      
       deleteLine(){
           this.loading = true;
           let that = this;

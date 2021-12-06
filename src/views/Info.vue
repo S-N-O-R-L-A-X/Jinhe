@@ -19,7 +19,8 @@
           <v-radio label="下行" value="下行"></v-radio>
       </v-radio-group>
     </v-card-actions>
-    
+    <v-snackbar v-model="snackbar" top color="warning">{{message}}</v-snackbar>
+
     <v-divider></v-divider>
     
     
@@ -168,6 +169,8 @@
       platforms:[],
       headers:[],
       newTime:[],
+      message:null,
+      snackbar:false,
     }),
     methods:{
       checkRound(){
@@ -176,7 +179,6 @@
       },
       getBasicInfo(){
         let that=this;
-        console.log(this.line_id);
         axios.get('http://localhost:8081/nosql/LineController/listLineInfo',  {
             params: {
               line_id:this.line_id
@@ -185,8 +187,14 @@
             .then(response => {
               that.basicInfo = response.data;
               console.log(that.basicInfo);
+              if(that.basicInfo===null){
+                  that.message="无该线路";
+                  that.snackbar=true;
+              }
+              else{
                 that.returned=1;
-              
+              }
+            
               
             })
             .catch(error => {
@@ -214,7 +222,14 @@
           .then(response => {
               that.platforms=response.data;
               console.log(this.platforms);
-              this.returned=2;
+              if(that.platforms===null){
+                  that.message="无该线路";
+                  that.snackbar=true;
+              }
+              else{
+                that.returned=2;
+              }
+
           })
           .catch(error => {
               alert('获取线路失败!\n' + error.message);
@@ -250,14 +265,20 @@
           })
           .then(response => {
               that.platforms=response.data;
+              if(that.platforms===null){
+                  that.message="无该线路";
+                  that.snackbar=true;
+              }
+              else{
+                that.returned=3;
+              }
+
           })
           .catch(error => {
               alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               this.loading = false;
-              this.returned=3;
-              console.log(this.platforms);
           });
       },
 

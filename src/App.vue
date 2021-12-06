@@ -14,7 +14,7 @@
       <v-spacer></v-spacer>
       <router-link to="/statistics"><v-icon>mdi-bus-stop</v-icon>统计数据</router-link>
       <v-spacer></v-spacer>
-      <router-link to="/analysis"><v-icon>mdi-bus-multiple</v-icon>分析查询</router-link>
+      <router-link to="/crossRoute"><v-icon>mdi-bus-multiple</v-icon>线路交互</router-link>
       <v-spacer></v-spacer>
       <router-link to="/route"><v-icon>mdi-subway</v-icon>线路管理</router-link>
     </v-app-bar>
