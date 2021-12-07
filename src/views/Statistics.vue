@@ -127,17 +127,6 @@
       directional:null,
       platforms:[],
       specialPlatforms:[],
-      admins: [
-        ['停靠路线最多的站点','mdi-account-multiple-outline'],
-        ['统计换乘线路数量', 'mdi-account-multiple-outline'],
-        ['统计特殊站台的数量', 'mdi-cog-outline'],
-      ],
-      cruds: [
-        ['Create', 'mdi-plus-outline'],
-        ['Read', 'mdi-file-outline'],
-        ['Update', 'mdi-update'],
-        ['Delete', 'mdi-delete'],
-      ],
       headers:[],
       items:[],
       initialName:[],
@@ -191,7 +180,6 @@
           })
           .finally(() => {
               this.loading = false;
-              
               
               this.headers1=[{text:"id",value:"id"},{text:"地铁站",value:"name"}];
               this.headers2=[{text:"id",value:"id"},{text:"起点站",value:"name"}];

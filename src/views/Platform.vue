@@ -9,7 +9,7 @@
       <v-col cols="6">
     <v-card-text>
       <v-text-field v-model="platform" placeholder="请输入站台名" label="请输入站台名"></v-text-field>
-      <v-text-field v-model="platform" placeholder="请输入站台名" label="请输入站台名"></v-text-field>
+      <!-- <v-text-field v-model="platform" placeholder="请输入站台名" label="请输入站台名"></v-text-field> -->
 
     </v-card-text>
 

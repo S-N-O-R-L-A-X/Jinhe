@@ -140,12 +140,12 @@
         </v-card>
       </v-dialog>
       
-      <v-btn color="amber darken-3" @click="addNewLineTest()">
+      <!-- <v-btn color="amber darken-3" @click="addNewLineTest()">
         测试
         <v-icon right>
           mdi-close-circle
         </v-icon>
-      </v-btn>
+      </v-btn> -->
 
       <v-btn :disabled="line_id===null" color="amber darken-3" @click="deleteLine()">
         删除路线
@@ -210,8 +210,12 @@
                           <v-card v-if="index===0||transLines[index]===transLines[index-1]">
                             {{alongStations[index].name}} {{transLines[index]}}
                           </v-card>
+                          <v-card v-else-if="index===transLines.length">
+                            {{alongStations[index].name}} 终点站
+                          </v-card>
+
                           <v-card v-else>
-                            {{alongStations[index].name}} 换乘<v-icon>mdi-exchange</v-icon> {{transLines[index]}}
+                            <v-icon>mdi-arrow-left-right-bold</v-icon>{{alongStations[index].name}} 换乘 {{transLines[index]}}
                           </v-card>
                         </v-timeline-item>
                       </v-timeline>
@@ -340,8 +344,8 @@
               this.loading = false;
               this.returned=2;
               this.n=this.alongStations.length;
-              
-              // console.log(this.alongStations);
+              console.log(this.transLines);
+              console.log(this.alongStations);
               // console.log(this.alongStations[0].name);
           });
       },
@@ -391,16 +395,17 @@
           }
 
           axios.post('api/nosql/LineController/insertLine',  {
-            line:{
-              id:this.id,
-              directional:this.directional,
-              kilometer:this.slide1.distance,
-              runtime:runtime,
-              interval:this.slide2.shift,
-              type:this.type,
-            },
-            stationList: this.newPlatforms,
-            
+            params:{
+              line:{
+                id:this.id,
+                directional:this.directional,
+                kilometer:this.slide1.distance,
+                runtime:runtime,
+                interval:this.slide2.shift,
+                type:this.type,
+              },
+              stationList: this.newPlatforms,
+            }  
           })
           .then(response => {
               console.log(response);
@@ -432,11 +437,11 @@
           method:"post",
           changeOrigin:"true",
           url:"api/nosql/LineController/insertLine",
-          transformRequest:[
-            function(data){
-              return QS.stringify(data);
-            }
-          ],
+          // transformRequest:[
+          //   function(data){
+          //     return QS.stringify(data);
+          //   }
+          // ],
           data: {
               line:{
                 id:3,
@@ -468,12 +473,13 @@
       deleteLine(){
           this.loading = true;
           let that = this;
-          axios.post('http://localhost:8081/nosql/LineController/deleteLine',  {
+          axios.get('api/nosql/LineController/deleteLine',  {
           params: {
               lineId:this.line_id,
           }
           })
           .then(response => {
+            console.log(response);
               this.snackbar=true;
               this.message="删除线路成功！";
           })
@@ -488,6 +494,7 @@
         this.line_id=null;
         this.starting=null;
         this.destination=null;
+        this.returned=0;
       }
     },
     
