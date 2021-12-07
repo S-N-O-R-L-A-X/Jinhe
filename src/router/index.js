@@ -4,7 +4,6 @@ import Home from '../views/Home.vue'
 import Info from '../views/Info.vue'
 import CrossRoute from '../views/CrossRoute.vue'
 import Route from '../views/Route.vue'
-import Shift from '../views/Shift.vue'
 import Platform from '../views/Platform.vue'
 import Statistics from '../views/Statistics.vue'
 
@@ -39,11 +38,7 @@ const routes = [
     name: 'Route',
     component: Route
   },
-  {
-    path: '/shift',
-    name: 'Shift',
-    component: Shift
-  },
+  
   {
     path: '/platform',
     name: 'Platform',

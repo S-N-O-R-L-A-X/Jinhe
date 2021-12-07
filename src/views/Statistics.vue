@@ -5,42 +5,42 @@
       <v-list>
         <v-list-item @click="getPlatformWithMostRoutes()">
           <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
+            <v-icon>mdi-calculator-variant</v-icon>
           </v-list-item-icon>
           <v-list-item-content>停靠路线最多的站点</v-list-item-content>
         </v-list-item>
 
         <v-list-item @click="getSpecialPlatforms()">
           <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
+            <v-icon>mdi-calculator-variant</v-icon>
           </v-list-item-icon>
           <v-list-item-content>统计特殊站台</v-list-item-content>
         </v-list-item>
 
         <v-list-item @click="getLineNumbers()">
           <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
+            <v-icon>mdi-calculator-variant</v-icon>
           </v-list-item-icon>
           <v-list-item-content>统计公交数量</v-list-item-content>
         </v-list-item>
 
         <v-list-item @click="getLinesWithMostPlatforms()">
           <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
+            <v-icon>mdi-calculator-variant</v-icon>
           </v-list-item-icon>
           <v-list-item-content>统计最多站点的线路</v-list-item-content>
         </v-list-item>
 
         <v-list-item @click="getLinesWithMostRunningTime()">
           <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
+            <v-icon>mdi-calculator-variant</v-icon>
           </v-list-item-icon>
           <v-list-item-content>统计运行时间最长的线路</v-list-item-content>
         </v-list-item>
 
         <v-list-item @click="getNeighbourPlatformsWithMostLines()">
           <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
+            <v-icon>mdi-calculator-variant</v-icon>
           </v-list-item-icon>
           <v-list-item-content>查询连接两个站台之间线路最多的两个站台</v-list-item-content>
         </v-list-item>
@@ -58,29 +58,24 @@
     <v-card v-show="returned===2">
       <v-row>
         <v-col cols="4">
-          地铁站
+          地铁站<v-icon>mdi-subway</v-icon>
       
           <v-data-table :headers="headers1" :items="specialPlatforms.subwayName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
 
         <v-col cols="4">
-          起点站
+          起点站<v-icon>mdi-source-commit-start-next-local</v-icon>
           <v-data-table :headers="headers2" :items="specialPlatforms.initialName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
 
         <v-col cols="4">
-          终点站
+          终点站<v-icon>mdi-source-commit-start</v-icon>
           <v-data-table :headers="headers3" :items="specialPlatforms.endName" :items-per-page="15" class="elevation-1">
           </v-data-table>
         </v-col>
 
-        <!-- <v-col cols="3">
-          单行站
-          <v-data-table :headers="headers4" :items="endName" :items-per-page="15" class="elevation-1">
-          </v-data-table>
-        </v-col> -->
       </v-row>
     </v-card>
 
@@ -172,7 +167,7 @@
           })
           .then(response => {
               that.specialPlatforms=response.data;
-              // console.log(this.platforms);
+              console.log(this.specialPlatforms);
               this.returned=2;
           })
           .catch(error => {
@@ -189,6 +184,7 @@
               
           });
       },
+      
 
       getLineNumbers(){
           this.loading = true;
@@ -231,7 +227,7 @@
           })
           .finally(() => {
               console.log(this.lines);
-              this.headers=[{text:'类型',value:'type'},{text:'数量',value:'count'}];
+              this.headers=[{text:'线路名',value:'type'},{text:'站台数量',value:'count'}];
 
               this.loading = false;
               this.returned=4;
@@ -256,7 +252,7 @@
           })
           .finally(() => {
               console.log(this.lines);
-              this.headers=[{text:'类型',value:'type'},{text:'运行时间(单位：分钟)',value:'time'}];
+              this.headers=[{text:'线路名',value:'type'},{text:'运行时间(单位：分钟)',value:'time'}];
 
               this.loading = false;
               this.returned=5;

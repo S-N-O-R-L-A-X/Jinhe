@@ -238,16 +238,7 @@
               this.loading = false;
               this.returned=2;
               this.headers=[{text:"name",value:"stationName"},{text:"time",value:"arrivedTime"}]
-              // let r=that.platforms.stationList.length,c=that.platforms.time.length;
-              // this.newTime=new Array(r).fill(0).map(()=>new Array(c).fill(0))
-              // for(let i=0; i<r;++i){
-              //     for(let j=0;j<c;++j){
-              //         this.newTime[i][j]=that.platforms.time[j][i];
-              //     }
-              // }
-              // for(let i=0;i<r;++i){
-              //   this.headers.push({text:"aa",value:""})
-              // }
+              
               
           });
       },

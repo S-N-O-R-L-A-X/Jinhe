@@ -28,6 +28,13 @@
         </v-icon>
       </v-btn>
 
+      <v-btn color="amber darken-3" :disabled="line_id===null||starting!==null||destination!==null" @click="getSinglePlatforms()">
+        查询单行站
+        <v-icon right>
+          mdi-database-search
+        </v-icon>
+      </v-btn>
+
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on, attrs }">
           <v-btn color="amber darken-3" :disabled="line_id!==null||starting!==null||destination!==null" v-bind="attrs" v-on="on">
@@ -59,7 +66,7 @@
                       </v-col>
 
                       <v-col cols="3">路线总长度
-                        <v-slider v-model="slide1.distance" :label="slide1.label" :color="slide1.color" :thumb-color="slide1.thumbColor" thumb-label="always" :min=10 :max=500>
+                        <v-slider v-model="slide1.distance" :label="slide1.label" :color="slide1.color" :thumb-color="slide1.thumbColor" thumb-label="always" :min=10 :max=100>
                         </v-slider>
                       </v-col>
 
@@ -203,7 +210,7 @@
             <v-row align="center">
               <v-col>
                 <v-card color="light-blue lighten-3"  flat>
-                  <v-card-title>共{{n}}站 <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
+                  <v-card-title>共{{n}}站 <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar></v-card-title>
                     <v-sheet class="overflow-y-auto" height="300">
                       <v-timeline dense>
                         <v-timeline-item v-for="(alongStation,index) in alongStations" :key="index" small>
@@ -225,21 +232,17 @@
             </v-row>
           </div>
         </v-expand-transition>
-
+        
         <v-expand-transition offset--x>
           <div v-show="returned===3">
             <v-row align="center">
               <v-col>
                 <v-card color="light-blue lighten-3"  flat>
-                  <v-card-title>{{route_withID.route}} <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
+                  <v-card-title>单行站 <v-spacer></v-spacer><v-avatar><v-icon>mdi-bus-side</v-icon></v-avatar> {{line_id}}路公交车 </v-card-title>
                     <v-sheet class="overflow-y-auto" height="400">
-                      <v-timeline dense>
-                        <!-- <v-timeline-item v-for="i in n" :key="i" small>
-                          
-                          {{alongStations[i].name}} {{transLines[i]}}
-
-                        </v-timeline-item> -->
-                      </v-timeline>
+                      
+                        <v-data-table :headers="headers" :items="singlePlatforms.singleDir" :items-per-page="15" class="elevation-1">
+                        </v-data-table>
                     </v-sheet>
                 </v-card>
               </v-col>
@@ -247,6 +250,8 @@
             </v-row>
           </div>
         </v-expand-transition>
+          
+        
 
       </v-col>
     </v-row>
@@ -255,11 +260,8 @@
 </template>
 <script>
   import axios from "axios"
-  import QS from "qs"
   export default {
     data: () => ({
-      
-      entries: [],
       isLoading: false,
       line_id: null,
       search: null,
@@ -285,7 +287,7 @@
       allTypes:[{text:'干线'},{text:'环线'},{text:'夜班线'},{text:'高峰线'},{text:'支线'},
       {text:'城乡线'},{text:'驳接线'},{text:'社区线'},{text:'快速公交'}],
       
-      allowedStep: m => m % 10 === 0,
+      allowedStep: m => m % 1 === 0,
       rules:{id:[val => (val || '').length > 0 || 'This field is required'],},
       platform_id:null,
       slide1:{distance:1,label:"单位：公里",color:"yellow",thumbColor:"orange"},
@@ -294,6 +296,8 @@
       newPlatforms:[],
       message:null,
       snackbar:false,
+      singlePlatforms:{},
+      headers:[],
     }),
     methods:{
       getRouteWithID(){
@@ -372,6 +376,28 @@
           });
       },
 
+      getSinglePlatforms(){
+          this.loading = true;
+          let that = this;
+          axios.get('http://localhost:8081/nosql/StationController/listSingleDirectStation',{
+            params: {
+              lineId:this.line_id
+            }
+          })
+          .then(response => {
+              that.singlePlatforms=response.data;
+              console.log(this.singlePlatforms);
+              this.returned=3;
+          })
+          .catch(error => {
+              alert('获取线路失败!\n' + error.message);
+          })
+          .finally(() => {
+              this.headers=[{text:"id",value:"id"},{text:"站台名",value:"name"}];
+              
+          });
+      },
+
       addNewPlatforms(){
         let obj={};
         obj.id=this.platform_id;
@@ -383,6 +409,7 @@
         this.platform_id=null;
         this.slide3.timeCost=1;
       },
+
 
       addNewLine(){
           this.loading = true;
@@ -469,6 +496,7 @@
           });
 
       },
+      
       
       deleteLine(){
           this.loading = true;

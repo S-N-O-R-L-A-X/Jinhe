@@ -96,12 +96,6 @@ Statistics getLinesWithMostPlatforms()
 
 Statistics getLinesWithMostRunningTime()
 
-
-
-
-
-后端完成但前端未完成的功能：
-
 19.添加一条站点数不少于10的线路。
 
 Route addNewLine()
