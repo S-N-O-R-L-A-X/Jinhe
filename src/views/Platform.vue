@@ -1,19 +1,14 @@
 <template>
-  <v-card
-    color="amber lighten-2"
-    dark
-  >
+  <v-card color="amber lighten-2" dark>
+    <v-snackbar v-model="snackbar" top color="warning" timeout="2000">{{message}}</v-snackbar>
     <v-card-title class="text-h5 amber lighten-3">站台查询</v-card-title>
-    
+
     <v-row>
       <v-col cols="6">
     <v-card-text>
       <v-text-field v-model="platform" placeholder="请输入站台名" label="请输入站台名"></v-text-field>
-      <!-- <v-text-field v-model="platform" placeholder="请输入站台名" label="请输入站台名"></v-text-field> -->
-
     </v-card-text>
 
-    
     <v-divider></v-divider>
     
     <v-card-actions>
@@ -51,17 +46,14 @@
 import axios from "axios"
 export default {
     data: () => ({
-      descriptionLimit: 30,
       isLoading: false,
-      search: null,
       returned:0,
-      length: 3,
-      window: 0,
-      directional:null,
       platform:null,
       platforms:[],
       headers:[],
       lines:[],
+      snackbar:false,
+      message:null,
     }),
     methods: {
         getAllLines(){
@@ -70,19 +62,26 @@ export default {
             axios.get('http://localhost:8081/nosql/LineController/listAlongLine?',  {
             params: {
               name:this.platform
-              
             }
             })
             .then(response => {
                 that.lines=response.data;
+                console.log(response);
+                if(response.data.length===0){
+                  that.snackbar=true;
+                  that.message="找不到该站台！";
+                }
+                else{
+                  that.returned=1;
+                  that.headers=[{text:"id",value:"id"},{text:"经过的路线名",value:"alongLine"}]
+                }
             })
             .catch(error => {
                 alert('获取线路失败!\n' + error.message);
             })
             .finally(() => {
                 this.loading = false;
-                this.returned=1;
-                this.headers=[{text:"id",value:"id"},{text:"经过的路线名",value:"alongLine"}]
+                
                 // console.log(this.platforms);
             });
         },
@@ -90,7 +89,6 @@ export default {
         clearAll(){
           this.line_id = null;
           this.returned=0;
-          this.directional=null;
         }
     }
 }
