@@ -1,8 +1,6 @@
 <template>
-  <v-card
-    color="amber lighten-2"
-    dark
-  >
+  <v-card color="amber lighten-2" dark>
+    <v-snackbar v-model="snackbar" top color="warning" timeout="2000">{{message}}</v-snackbar>
     <v-card-title class="text-h5 amber lighten-3">
       查询线路信息
     </v-card-title>
@@ -19,7 +17,7 @@
           <v-radio label="下行" value="下行"></v-radio>
       </v-radio-group>
     </v-card-actions>
-    <v-snackbar v-model="snackbar" top color="warning">{{message}}</v-snackbar>
+    
 
     <v-divider></v-divider>
     
@@ -177,25 +175,25 @@
         let reg=new RegExp(/^.*环线$/);
         return reg.test(this.line_id);
       },
+      
       getBasicInfo(){
         let that=this;
+        this.basicInfo={};
         axios.get('http://localhost:8081/nosql/LineController/listLineInfo',  {
             params: {
               line_id:this.line_id
             }
           })
             .then(response => {
-              that.basicInfo = response.data;
-              console.log(that.basicInfo);
-              if(that.basicInfo===null){
+              console.log(response.data);
+              if(response.data===null){
                   that.message="无该线路";
                   that.snackbar=true;
               }
               else{
                 that.returned=1;
+                that.basicInfo=response.data;
               }
-            
-              
             })
             .catch(error => {
               alert('获取线路失败!\n' + error.message);
@@ -206,8 +204,8 @@
       },
       
       getShift(){
-          this.loading = true;
-          let that = this;
+          this.loading=true;
+          let that=this;
           let param=that.line_id+'路';
           if(this.directional!==null&&this.directional!=="off"){
             param+=that.directional;
@@ -220,14 +218,15 @@
             }
           })
           .then(response => {
-              that.platforms=response.data;
-              console.log(this.platforms);
-              if(that.platforms===null){
+              
+              console.log(response);
+              if(response.data===""){
                   that.message="无该线路";
                   that.snackbar=true;
               }
               else{
                 that.returned=2;
+                that.platforms=response.data;
               }
 
           })
@@ -236,10 +235,7 @@
           })
           .finally(() => {
               this.loading = false;
-              this.returned=2;
-              this.headers=[{text:"name",value:"stationName"},{text:"time",value:"arrivedTime"}]
-              
-              
+              this.headers=[{text:"name",value:"stationName"},{text:"time",value:"arrivedTime"}];
           });
       },
 
@@ -247,6 +243,7 @@
           this.loading = true;
           let that = this;
           let param=that.line_id+'路';
+          this.basicInfo={};
           if(this.directional!=="off")
             param+=that.directional;
           axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
@@ -255,13 +252,14 @@
           }
           })
           .then(response => {
-              that.platforms=response.data;
-              if(that.platforms===null){
+              console.log(response)
+              if(response.data===""){
                   that.message="无该线路";
-                  that.snackbar=true;
+                  that.snackbar=true; 
               }
               else{
                 that.returned=3;
+                that.platforms=response.data;
               }
 
           })
@@ -270,6 +268,8 @@
           })
           .finally(() => {
               this.loading = false;
+              console.log(this.returned);
+
           });
       },
 
