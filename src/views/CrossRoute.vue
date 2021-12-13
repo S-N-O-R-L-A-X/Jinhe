@@ -1,5 +1,7 @@
 <template>
   <v-card color="amber lighten-2" dark>
+    <v-snackbar v-model="snackbar" top color="warning" timeout="2000">{{message}}</v-snackbar>
+
     <v-card-title class="text-h5 amber lighten-3">
       查询路线交叉情况
     </v-card-title>
@@ -12,9 +14,7 @@
         <v-divider></v-divider>
         <v-btn color="amber darken-3" :disabled="!line1||!line2" @click="getDuplicatePlatforms()">
             查询两条线路重复的站点名
-            <v-icon right>
-            mdi-magnify
-            </v-icon>
+            <v-icon right>mdi-magnify</v-icon>
         </v-btn>
 
         <v-btn color="amber darken-3" :disabled="!line1||line2" @click="getExchangeRoutes()">
@@ -41,7 +41,7 @@
 
         <v-expand-transition offset--x>
           <div v-show="returned===2">
-              <v-data-table :headers="headers" :items="platforms">
+              <v-data-table :headers="headers" :items="platforms" items-per-page="5">
               </v-data-table>
           </div>
         </v-expand-transition>
@@ -59,6 +59,8 @@ export default {
         line2:null,
         platforms:[],
         returned:0,
+        snackbar:false,
+        message:null,
     }),
     methods:{
         getDuplicatePlatforms(){
@@ -97,21 +99,30 @@ export default {
           }
           })
           .then(response => {
+            console.log(response);
+            if(response.data.length===0){
+              that.snackbar=true;
+              that.message="无该线路！";
+            }
+            else{
+              that.returned=2;
               that.platforms=response.data;
+              that.headers=[{text:'站台名',value:'name'},{text:'经过该站台的路线',value:'type'}];
+            }
           })
           .catch(error => {
               alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
-              console.log(this.platforms);
-              this.headers=[{text:'站台名',value:'name'},{text:'经过该站台的路线',value:'type'}];
+              
               this.loading = false;
-              this.returned=2;
+              
           });
         },
         clearAll(){
           this.line1=null;
           this.line2=null;
+          this.returned=0;
         }
     }
 }
