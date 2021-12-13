@@ -1,5 +1,6 @@
 <template>
-  <v-card color="amber lighten-2" dark >
+  <v-card color="amber lighten-2" dark>
+    <v-snackbar v-model="snackbar" top color="warning" timeout="2000">{{message}}</v-snackbar>
     <v-card-title class="text-h5 amber lighten-3">
       查询路线
     </v-card-title>
@@ -11,7 +12,6 @@
       <v-text-field v-model="destination" placeholder="请输入终点站" label="请输入终点站"></v-text-field>
     </v-card-text>
     <v-divider></v-divider>
-    <v-snackbar v-model="snackbar" top color="success">{{message}}</v-snackbar>
       
     <v-card-actions>
       <v-btn color="amber darken-3" :disabled="line_id===null||starting===null||destination===null" @click="getRouteWithID()">
@@ -215,7 +215,7 @@
                       <v-timeline dense>
                         <v-timeline-item v-for="(alongStation,index) in alongStations" :key="index" small>
                           <v-card v-if="index===0||transLines[index]===transLines[index-1]">
-                            {{alongStations[index].name}} {{transLines[index]}}
+                            {{alongStations[index].name}} 乘坐 {{transLines[index]}}
                           </v-card>
                           <v-card v-else-if="index===transLines.length">
                             {{alongStations[index].name}} 终点站
@@ -264,10 +264,7 @@
     data: () => ({
       isLoading: false,
       line_id: null,
-      search: null,
       returned:0,
-      length: 3,
-      window: 0,
       route_withID:{},
       directional:null,
       platforms:{},
@@ -284,6 +281,7 @@
       e1:1,
       type:null,
       id:null,
+
       allTypes:[{text:'干线'},{text:'环线'},{text:'夜班线'},{text:'高峰线'},{text:'支线'},
       {text:'城乡线'},{text:'驳接线'},{text:'社区线'},{text:'快速公交'}],
       
@@ -298,6 +296,7 @@
       snackbar:false,
       singlePlatforms:{},
       headers:[],
+
     }),
     methods:{
       getRouteWithID(){
@@ -311,17 +310,25 @@
             }
           })
             .then(response => {
-              that.route_withID = response.data;
-              console.log(that.route_withID);
-              that.returned=1;
+              console.log(response);
+              if(response.data===null){
+                that.snackbar=true;
+                that.message="站台不存在或线路不存在！"
+              }
+              else{
+                that.returned=1;
+                that.route_withID = response.data;
+                that.up_or_down=that.route_withID.direction.endsWith('上行');
+              }
+              
             })
             .catch(error => {
               alert('获取线路失败!\n' + error.message);
             })
             .finally(() => {
               this.loading = false;
-              this.up_or_down=this.route_withID.direction.endsWith('上行');
-              console.log(this.up_or_down);
+              
+
             });
       },
       
@@ -336,43 +343,27 @@
           }
           })
           .then(response => {
+            if(response.data===null){
+              that.snackbar=true;
+              that.message="找不到路线！";
+            }
+            else{
               that.platforms=response.data;
               that.alongStations=response.data.alongStation;
               that.transLines=response.data.transLine;
               that.returned=2;
+              that.n=that.alongStations.length;
+            }
+              
           })
           .catch(error => {
               alert('获取线路失败!\n' + error.message);
           })
           .finally(() => {
               this.loading = false;
-              this.returned=2;
-              this.n=this.alongStations.length;
-              console.log(this.transLines);
-              console.log(this.alongStations);
-              // console.log(this.alongStations[0].name);
-          });
-      },
+              
+              
 
-      getPlatform(){
-          this.loading = true;
-          let that = this;
-          let param=that.line_id+'路'+that.directional;
-          axios.get('http://localhost:8081/nosql/StationController/listStationInfo',  {
-          params: {
-            name:param
-          }
-          })
-          .then(response => {
-              that.platforms=response.data;
-          })
-          .catch(error => {
-              alert('获取线路失败!\n' + error.message);
-          })
-          .finally(() => {
-              this.loading = false;
-              this.returned=3;
-              console.log(this.platforms);
           });
       },
 
@@ -416,8 +407,10 @@
           let that = this,runtime=this.startTime+'-'+this.endTime;
           
           if(!this.id||!this.directional||!this.slide1.distance
-          ||!this.startTime||!this.endTime||!this.newPlatforms||!this.type){
+          ||!this.startTime||!this.endTime||this.newPlatforms.length===0||!this.type){
             console.log("return!");
+            this.snackbar=true;
+            this.message="您有信息没填！";
             return ;
           }
 
@@ -436,6 +429,7 @@
           })
           .then(response => {
               console.log(response);
+
               this.message="创建线路成功！";
               this.snackbar=true;
           })
@@ -447,55 +441,39 @@
               this.dialog=false;              
           });
       },
-      addNewLineTest(){
-        // axios.post('api/nosql/LineController/insertLine',  {
-        //     line:{
-        //       id:3,
-        //       directional:"TRUE",
-        //       kilometer:15,
-        //       runtime:"6:00-23:59",
-        //       interval:5,
-        //       type:"干线",
-        //     },
-        //     stationList: [{"id":"21460","runtime":"6:00"},{"id": "41394","runtime":"3"}],
-            
-        //   })
-        axios({
-          method:"post",
-          changeOrigin:"true",
-          url:"api/nosql/LineController/insertLine",
-          // transformRequest:[
-          //   function(data){
-          //     return QS.stringify(data);
-          //   }
-          // ],
-          data: {
-              line:{
-                id:3,
-                directional:true,
-                kilometer:15,
-                runtime:"6:00-23:59",
-                interval:5,
-                type:"strong",
-              },
-              stationList: [{"id":"21460","runtime":"6:00"},{"id": "41394","runtime":"3"}],
+      // addNewLineTest(){
+      //   axios({
+      //     method:"post",
+      //     changeOrigin:"true",
+      //     url:"api/nosql/LineController/insertLine",
+          
+      //     data: {
+      //         line:{
+      //           id:3,
+      //           directional:true,
+      //           kilometer:15,
+      //           runtime:"6:00-23:59",
+      //           interval:5,
+      //           type:"strong",
+      //         },
+      //         stationList: [{"id":"21460","runtime":"6:00"},{"id": "41394","runtime":"3"}],
 
-          }
-        })
-          .then(response => {
-              console.log(response);
-              this.message="创建线路成功！";
-              this.snackbar=true;
-          })
-          .catch(error => {
-              alert('添加线路失败!\n' + error.message);
-          })
-          .finally(() => {
-              this.loading=false;
-              this.dialog=false;              
-          });
+      //     }
+      //   })
+      //     .then(response => {
+      //         console.log(response);
+      //         this.message="创建线路成功！";
+      //         this.snackbar=true;
+      //     })
+      //     .catch(error => {
+      //         alert('添加线路失败!\n' + error.message);
+      //     })
+      //     .finally(() => {
+      //         this.loading=false;
+      //         this.dialog=false;              
+      //     });
 
-      },
+      // },
       
       
       deleteLine(){
