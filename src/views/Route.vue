@@ -1,5 +1,5 @@
 <template>
-  <v-card color="amber lighten-2" dark>
+  <v-card color="amber lighten-2">
     <v-snackbar v-model="snackbar" top color="warning" timeout="2000">{{message}}</v-snackbar>
     <v-card-title class="text-h5 amber lighten-3">
       查询路线
@@ -156,17 +156,14 @@
 
       <v-btn :disabled="line_id===null" color="amber darken-3" @click="deleteLine()">
         删除路线
-        <v-icon right>
-          mdi-close-circle
-        </v-icon>
+        <v-icon right>mdi-close-circle</v-icon>
       </v-btn>
 
-      <v-btn :disabled="line_id===null&&starting===null&&destination===null" color="grey darken-3" @click="clearAll">
+      <v-btn :disabled="!line_id&&!starting&&!destination" color="grey darken-3 white--text" @click="clearAll">
         Clear
-        <v-icon right>
-          mdi-close-circle
-        </v-icon>
+        <v-icon right>mdi-close-circle</v-icon>
       </v-btn>
+
     </v-card-actions>
     </v-col>
     <v-col cols="6">

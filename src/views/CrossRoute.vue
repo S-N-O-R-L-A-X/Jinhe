@@ -1,5 +1,5 @@
 <template>
-  <v-card color="amber lighten-2" dark>
+  <v-card color="amber lighten-2" >
     <v-snackbar v-model="snackbar" top color="warning" timeout="2000">{{message}}</v-snackbar>
 
     <v-card-title class="text-h5 amber lighten-3">
@@ -24,7 +24,7 @@
             </v-icon>
         </v-btn>
 
-        <v-btn :disabled="!line1&&!line2" color="grey darken-3" @click="clearAll()">
+        <v-btn :disabled="!line1&&!line2" color="grey darken-3 white--text" @click="clearAll()">
             Clear
             <v-icon right>mdi-close-circle</v-icon>
         </v-btn>

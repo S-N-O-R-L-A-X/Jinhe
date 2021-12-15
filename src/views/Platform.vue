@@ -1,5 +1,5 @@
 <template>
-  <v-card color="amber lighten-2" dark>
+  <v-card color="amber lighten-2">
     <v-snackbar v-model="snackbar" top color="warning" timeout="2000">{{message}}</v-snackbar>
     <v-card-title class="text-h5 amber lighten-3">站台查询</v-card-title>
 
@@ -19,7 +19,7 @@
         </v-icon>
       </v-btn>
       
-      <v-btn :disabled="!platform" color="grey darken-3" @click="clearAll()">
+      <v-btn :disabled="!platform" color="grey darken-3 white--text-field" @click="clearAll()">
         Clear
         <v-icon right>
           mdi-close-circle

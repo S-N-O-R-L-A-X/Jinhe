@@ -1,55 +1,50 @@
 <template>
-  <v-card color="amber lighten-2" dark>
+  <v-card color="amber lighten-2">
     <v-snackbar v-model="snackbar" top color="warning" timeout="2000">{{message}}</v-snackbar>
     <v-card-title class="text-h5 amber lighten-3">
       查询线路信息
     </v-card-title>
     <v-row>
       <v-col cols="6">
-    <v-card-text >
-      <v-text-field v-model="line_id" placeholder="请输入线路名" label="请输入线路名"></v-text-field>
-    </v-card-text>
-    <v-divider></v-divider>
-    <v-card-actions>
-      <v-radio-group v-model="directional" class="white--text">
-          <v-radio label="不区分上下行" value="off" class="white--text"></v-radio>
-          <v-radio label="上行" value="上行"></v-radio>
-          <v-radio label="下行" value="下行"></v-radio>
-      </v-radio-group>
-    </v-card-actions>
-    
+        <v-card-text>
+          <v-text-field v-model="line_id" placeholder="请输入线路名" label="请输入线路名"></v-text-field>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-radio-group v-model="directional">
+              <v-radio label="不区分上下行" value="off"></v-radio>
+              <v-radio label="上行" value="上行"></v-radio>
+              <v-radio label="下行" value="下行"></v-radio>
+          </v-radio-group>
+        </v-card-actions>
 
-    <v-divider></v-divider>
-      
-    <v-card-actions>
-      <v-btn color="amber darken-3" :disabled="line_id===null" @click="getBasicInfo()">
-        查询线路基本信息
-        <v-icon right>
-          mdi-magnify
-        </v-icon>
-      </v-btn>
-      
-      <v-btn color="amber darken-3" :disabled="line_id===null"  @click="getShift()">
-        查询全部班次
-        <v-icon right>
-          mdi-magnify-expand
-        </v-icon>
-      </v-btn>
+        <v-divider></v-divider>
+          
+        <v-card-actions>
+          <v-btn color="amber darken-3" :disabled="line_id===null" @click="getBasicInfo()">
+            查询线路基本信息
+            <v-icon right>
+              mdi-magnify
+            </v-icon>
+          </v-btn>
+          
+          <v-btn color="amber darken-3" :disabled="line_id===null"  @click="getShift()">
+            查询全部班次
+            <v-icon right>mdi-magnify-expand</v-icon>
+          </v-btn>
 
-      <v-btn color="amber darken-3" :disabled="line_id===null" @click="getPlatform()">
-        查询全部站台
-        <v-icon right>
-          mdi-database-search
-        </v-icon>
-      </v-btn>
+          <v-btn color="amber darken-3" :disabled="line_id===null" @click="getPlatform()">
+            查询全部站台
+            <v-icon right>
+              mdi-database-search
+            </v-icon>
+          </v-btn>
 
-      <v-btn :disabled="!line_id" color="grey darken-3" @click="clearAll">
-        Clear
-        <v-icon right>
-          mdi-close-circle
-        </v-icon>
-      </v-btn>
-    </v-card-actions>
+          <v-btn :disabled="!line_id" color="grey darken-3 white--text" @click="clearAll">
+            Clear
+            <v-icon right>mdi-close-circle</v-icon>
+          </v-btn>
+        </v-card-actions>
     </v-col>
     <v-col cols="6">
         <v-expand-transition offset--x>
