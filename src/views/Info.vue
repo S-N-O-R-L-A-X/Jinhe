@@ -11,8 +11,8 @@
     </v-card-text>
     <v-divider></v-divider>
     <v-card-actions>
-      <v-radio-group v-model="directional">
-          <v-radio label="不区分上下行" value="off"></v-radio>
+      <v-radio-group v-model="directional" class="white--text">
+          <v-radio label="不区分上下行" value="off" class="white--text"></v-radio>
           <v-radio label="上行" value="上行"></v-radio>
           <v-radio label="下行" value="下行"></v-radio>
       </v-radio-group>
@@ -20,8 +20,6 @@
     
 
     <v-divider></v-divider>
-    
-    
       
     <v-card-actions>
       <v-btn color="amber darken-3" :disabled="line_id===null" @click="getBasicInfo()">

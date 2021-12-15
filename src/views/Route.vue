@@ -486,8 +486,14 @@
           })
           .then(response => {
             console.log(response);
+            if(response.data==="线路不存在"){
+              this.snackbar=true;
+              this.message="线路不存在，删除线路失败！";
+            }
+            else{
               this.snackbar=true;
               this.message="删除线路成功！";
+            }
           })
           .catch(error => {
               alert('添加线路失败!\n' + error.message);
