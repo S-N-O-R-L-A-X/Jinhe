@@ -40,15 +40,11 @@ Platform getAllLines()
 
 4.查询乘坐10路从大悦城到小吃街，线路的运行方向(上行或下行)、沿路站点、运行时间
 
-getRoute_withID
-
-
+Route getRouteWithID
 
 5.查询从id为16115的站台(红瓦寺)到id为14768的站台(动物园)的最短路径。
 
-
-
-
+Route getShortestRoute
 
 7.查询某条线路某个方向的全部班次信息。
 
@@ -70,7 +66,7 @@ Statistics getLineNumbers()
 
 13.查询两条线路重复的站点名 。 
 
-Analysis getDuplicatePlatforms()
+CrossRoute getDuplicatePlatforms()
 
 14.查询换乘线路。换乘线路数即线路停靠的所有站台停靠其他线路的数量的总和。
 
@@ -84,7 +80,7 @@ Analysis getDuplicatePlatforms()
 
 • 换乘线路注意去掉该线路本身。
 
-Analysis getExchangeRoutes()
+CrossRoute getExchangeRoutes()
 
 15.查询连接两个站台之间线路最多的两个站台并且按照降序排列，显示前15个。 Statistics getNeighbourPlatformsWithMostLines()
 
@@ -106,8 +102,6 @@ Route deleteLine()
 
 
 
-一些软件失效：
 
-1.查询线路功能不足：没有该线路时无法inform使用者
 
 
