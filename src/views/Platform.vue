@@ -12,7 +12,7 @@
     <v-divider></v-divider>
     
     <v-card-actions>
-      <v-btn color="amber darken-3" @click="getAllLines()">
+      <v-btn :disabled="!platform" color="amber darken-3" @click="getAllLines()">
         查询经过该站的所有路线
         <v-icon right>
           mdi-magnify
