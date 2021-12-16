@@ -298,6 +298,7 @@
     methods:{
       getRouteWithID(){
         let that=this;
+        this.returned=0;
         console.log(this.line_id);
         axios.get('http://localhost:8081/nosql/LineController/listRouteWithLine',  {
             params: {
@@ -332,7 +333,7 @@
       getShortestRoute(){
           this.loading = true;
           let that = this;
-          
+          this.returned=0;
           axios.get('http://localhost:8081/nosql/LineController/listShortestRouteByStation',  {
           params: {
             start:this.starting,
@@ -367,6 +368,7 @@
       getSinglePlatforms(){
           this.loading = true;
           let that = this;
+          this.returned=0;
           axios.get('http://localhost:8081/nosql/StationController/listSingleDirectStation',{
             params: {
               lineId:this.line_id

@@ -19,7 +19,7 @@
         </v-icon>
       </v-btn>
       
-      <v-btn :disabled="!platform" color="grey darken-3 white--text-field" @click="clearAll()">
+      <v-btn :disabled="!platform" color="grey darken-3 white--text" @click="clearAll()">
         Clear
         <v-icon right>
           mdi-close-circle
@@ -59,14 +59,15 @@ export default {
         getAllLines(){
             this.loading = true;
             let that = this;
-            axios.get('http://localhost:8081/nosql/LineController/listAlongLine?',  {
+            axios.get('http://localhost:8081/nosql/LineController/listAlongLine',  {
             params: {
               name:this.platform
             }
             })
             .then(response => {
-                that.lines=response.data;
+                
                 console.log(response);
+                that.lines=response.data;
                 if(response.data.length===0){
                   that.snackbar=true;
                   that.message="找不到该站台！";

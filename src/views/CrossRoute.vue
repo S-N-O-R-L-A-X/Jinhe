@@ -33,15 +33,18 @@
         <v-expand-transition offset--x>
           <div v-show="returned===1">
               <p>共{{platforms.count}}个重复站点名</p>
-              <v-list v-for="platform of platforms.crossStation" dense>
-                  <v-list-item>{{platform.name}} {{platform.english}}</v-list-item>
-              </v-list>
+              <!-- <v-list v-for="platform of platforms.crossStation" dense>
+                  <v-list-item>{{platform.name}} {{platform.english}}</v-list-item>   
+              </v-list> -->
+              <v-chip-group v-for="platform of platforms.crossStation" dense>
+                <v-chip color="light-blue lighten-3 white--text">{{platform.name}} {{platform.english}}</v-chip>
+              </v-chip-group>
           </div>
         </v-expand-transition>
 
         <v-expand-transition offset--x>
           <div v-show="returned===2">
-              <v-data-table :headers="headers" :items="platforms" items-per-page="5">
+              <v-data-table :headers="headers" :items="platforms" :items-per-page="5">
               </v-data-table>
           </div>
         </v-expand-transition>
@@ -66,7 +69,7 @@ export default {
         getDuplicatePlatforms(){
           this.loading = true;
           let that = this;
-          
+          this.returned=0;
           axios.get('http://localhost:8081/nosql/StationController/listCrossStation',  {
           params: {
             line1:this.line1,
@@ -91,6 +94,7 @@ export default {
         getExchangeRoutes(){
           this.loading = true;
           let that = this;
+          this.returned=0;
           console.log(this.line1);
           axios.get('http://localhost:8081/nosql/LineController/listTransLineStation',  {
           params: {
@@ -102,7 +106,7 @@ export default {
             console.log(response);
             if(response.data.length===0){
               that.snackbar=true;
-              that.message="无该线路！";
+              that.message="无该线路或没有换乘线路！";
             }
             else{
               that.returned=2;
